@@ -1,0 +1,153 @@
+\documentclass[12pt,a4paper,onecolumn]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PAQUETES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage[utf8]{inputenc}  % UTF-8 evita problemas de caracteres
+\usepackage[T1]{fontenc}     % Mejor soporte de fuentes en LaTeX
+\usepackage[spanish]{babel}  % Manejo correcto de idioma español
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[table]{xcolor}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{dcolumn}
+\usepackage{rotating}
+\usepackage{threeparttable}
+\usepackage[capposition=top]{floatrow}
+\usepackage[labelsep=period]{caption}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage[bottom]{footmisc}
+\usepackage{enumerate}
+\usepackage{units}
+\usepackage{placeins}
+\usepackage{booktabs,multirow}
+
+% Bibliografía
+\usepackage{natbib}
+\bibliographystyle{apalike}
+\bibpunct{(}{)}{,}{a}{,}{,}
+
+% Formato de párrafos
+\renewcommand{\baselinestretch}{1}
+
+% Definir columnas para tablas
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\usepackage{xfrac}
+\usepackage{bbold}
+
+\setcounter{secnumdepth}{6}
+
+\usepackage{titlesec}
+\titleformat*{\subsection}{\normalsize \bfseries}
+
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue,citecolor=blue]{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     TÍTULO, AUTORES Y FECHA              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{\textbf{Taller 2 - Predicción de Pobreza en Colombia}}
+
+\author{%
+\begin{center}
+
+Harold Stiven Acuña\\
+José David Cuervo\\
+José David Dávila\\
+César Augusto Alfaro
+\end{center}%
+}
+
+\date{\today}
+
+% Configuración simple para espaciado de párrafos
+\setlength{\parskip}{0.6em} % Espacio entre párrafos
+\setlength{\parindent}{1em} % Sangría moderada
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ABSTRACT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+Este documento presenta el análisis de datos y la implementación de modelos de clasificación para la predicción de la pobreza en Colombia.
+\end{abstract}
+
+\medskip
+
+\begin{flushleft}
+    {\bf Palabras clave:} pobreza, clasificación, aprendizaje automático \\
+    {\bf Clasificación JEL:} J31, C53, J16
+\end{flushleft}
+
+% Añadir información del repositorio GitHub
+\begin{center}
+    \textit{Repositorio GitHub:} \url{https://github.com/alfarocesar/BDML_Predicting_Poverty_Equipo8}
+\end{center}
+
+\pagebreak
+\doublespacing
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           DOCUMENTO                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introducción}
+Breve descripción del problema, antecedentes y motivación del estudio.
+
+\section{Datos}
+\subsection{Descripción de la base de datos}
+Explicación de la estructura de los datos y variables clave.
+
+\subsection{Procesamiento y limpieza de datos}
+Metodologías aplicadas para la adecuación de los datos.
+
+\subsection{Análisis descriptivo}
+Exploración de la variabilidad de los datos con tablas y gráficos.
+
+\section{Modelos y Resultados}
+\subsection{Metodología}
+Descripción de los algoritmos utilizados: Regresión Logística, Random Forest, etc.
+
+\subsection{Entrenamiento y validación de modelos}
+Explicación del proceso de entrenamiento y evaluación.
+
+\subsection{Comparación de modelos}
+Tabla comparativa con métricas de desempeño.
+
+\subsection{Importancia de variables}
+Análisis de las características más relevantes en la predicción.
+
+\section{Conclusión}
+Resumen de los hallazgos principales y posibles mejoras futuras.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TERMINA EL CONTENIDO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagebreak
+\singlespacing
+\nocite{*}
+\bibliographystyle{apalike}
+\bibliography{references}
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TERMINA EL DOCUMENTO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
