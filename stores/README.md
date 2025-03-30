@@ -1,8 +1,8 @@
-# Datos del Proyecto GEIH 2018
+# Datos del Proyecto Predicción de Pobreza
 
 ## Fuente de Datos
-Los datos provienen de la Gran Encuesta Integrada de Hogares (GEIH) 2018 para Bogotá, disponible en:
-https://ignaciomsarmiento.github.io/GEIH2018_sample/
+Los datos provienen de DANE y la misión para el "Empalme de las Series de Empleo, Pobreza y Desigualdad - MESE" disponible en:
+https://www.kaggle.com/competitions/uniandes-bdml-202510-ps-2/data
 
 ## Estructura del Directorio
 stores/
@@ -18,12 +18,8 @@ Los datos incluyen información sobre:
 - Educación
 - Otras variables socioeconómicas
 
-La descripción detallada de las variables se documentará una vez completado el web scraping.
-
 ## Procesamiento de Datos
-El procesamiento se realiza en dos etapas:
-1. Web scraping (scripts/01_webscraping.R)
-2. Limpieza y preparación (scripts/02_data_cleaning.R)
+Describir lo relacionado con el procesamiento de datos
 
 ## Notas
 - Los archivos de datos crudos no se incluyen en el repositorio debido a su tamaño
