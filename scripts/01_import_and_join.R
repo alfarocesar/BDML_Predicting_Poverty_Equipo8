@@ -31,6 +31,12 @@ train_personas <- read.csv("stores/raw/train_personas.csv")
 test_hogares <- read.csv("stores/raw/test_hogares.csv")
 test_personas <- read.csv("stores/raw/test_personas.csv")
 
+# Asegurar que id sea tratado como character en todos los datasets
+train_hogares$id <- as.character(train_hogares$id)
+train_personas$id <- as.character(train_personas$id)
+test_hogares$id <- as.character(test_hogares$id)
+test_personas$id <- as.character(test_personas$id)
+
 # Verificar dimensiones de los datos
 cat("Dimensiones de train_hogares:", dim(train_hogares), "\n")
 cat("Dimensiones de train_personas:", dim(train_personas), "\n")
@@ -73,11 +79,12 @@ cat("Realizando preprocesamiento básico de datos individuales...\n")
 preprocess_personas_basico <- function(data) {
   data <- data %>% 
     mutate(
-      mujer = ifelse(P6020 == 2, 1, 0),        # Indicador de mujer (1=mujer, 0=hombre)
-      H_Head = ifelse(P6050 == 1, 1, 0),       # Indicador de jefe de hogar
-      menor = ifelse(P6040 <= 18, 1, 0),       # Indicador de menor de edad
-      edad = P6040,                            # Renombrar edad para claridad
-      ocupado = ifelse(is.na(Oc), 0, Oc)       # Indicador de ocupación
+      id = as.character(id),               # Asegurar que id sea character
+      mujer = ifelse(P6020 == 2, 1, 0),    # Indicador de mujer (1=mujer, 0=hombre)
+      H_Head = ifelse(P6050 == 1, 1, 0),   # Indicador de jefe de hogar
+      menor = ifelse(P6040 <= 18, 1, 0),   # Indicador de menor de edad
+      edad = P6040,                        # Renombrar edad para claridad
+      ocupado = ifelse(is.na(Oc), 0, Oc)   # Indicador de ocupación
     ) %>%
     # Seleccionamos solo las variables básicas necesarias
     select(id, Orden, mujer, H_Head, menor, edad, ocupado)
@@ -136,12 +143,16 @@ cat("Seleccionando variables básicas de hogares...\n")
 
 # Seleccionar variables básicas para el conjunto de entrenamiento
 train_hogares_basic <- train_hogares %>%
+  # Asegurar que id sea character
+  mutate(id = as.character(id)) %>%
   # Seleccionamos un conjunto mínimo de variables de interés
   select(id, Dominio, P5000, P5010, P5090, P5130, P5140, Nper, Npersug, 
          Ingtotugarr, Ingpcug, Lp, Pobre) 
 
 # Seleccionar variables básicas para el conjunto de prueba
 test_hogares_basic <- test_hogares %>%
+  # Asegurar que id sea character
+  mutate(id = as.character(id)) %>%
   # Seleccionamos las mismas variables (excepto Pobre que no está en test)
   select(id, Dominio, P5000, P5010, P5090, P5130, P5140, Nper, Npersug, Lp)
 
@@ -154,12 +165,18 @@ cat("Uniendo conjuntos de datos...\n")
 # Unir para entrenamiento (left_join para mantener todos los hogares)
 train_joined <- train_hogares_basic %>%
   left_join(train_hogar_agregados, by = "id") %>%
-  left_join(train_hogar_jefe, by = "id")
+  left_join(train_hogar_jefe, by = "id") %>%
+  # Asegurar que id esté como primera columna y sea character
+  select(id, everything()) %>%
+  mutate(id = as.character(id))
 
 # Unir para prueba
 test_joined <- test_hogares_basic %>%
   left_join(test_hogar_agregados, by = "id") %>%
-  left_join(test_hogar_jefe, by = "id")
+  left_join(test_hogar_jefe, by = "id") %>%
+  # Asegurar que id esté como primera columna y sea character
+  select(id, everything()) %>%
+  mutate(id = as.character(id))
 
 # Dimensiones finales
 cat("Dimensiones del conjunto de entrenamiento unido:", dim(train_joined), "\n")
