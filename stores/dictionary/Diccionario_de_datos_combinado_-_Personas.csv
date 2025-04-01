@@ -1,0 +1,141 @@
+,Variable,Tipo,Descripción
+0,id,Categórica,
+1,Orden,Cuantitativa Discreta,Llave de persona  discrete numeric Identificación de la persona 
+2,Clase,Binaria,Clase  discrete character Clase: 1 cabecera 2 resto 
+3,Clase,Binaria,"1. Cabecera, 2. Resto (centros discrete character Clase: 1 cabecera 2 resto "
+4,Dominio,Categórica,"Dominio  discrete character Dominio cada una de las 24 a.M., otras"
+5,Dominio,Categórica,"Cada una de las 24 a.M., otras discrete character Dominio cada una de las 24 a.M., otras"
+6,Estrato1,Cuantitativa Discreta,Estrato de energía para las 13 discrete numeric Estarato socieconómico 1 estrato 1 2
+7,P6020,Binaria,Sexo  discrete numeric Sexo 1 hombre 2 mujer 
+8,P6040,Cuantitativa Discreta,¿cuántos años cumplidos tiene?  contin numeric ¿Cuántos años cumplidos tiene … ? 
+9,P6050,Cuantitativa Discreta,¿cuál es el parentesco de ...Con el discrete numeric ¿Cuál es el parentesco de ... Con el jefe o
+10,P6090,Cuantitativa Discreta,"""¿ ... Está afiliado, es cotizante o discrete numeric ¿ ... Está afiliado, es cotizante o es"
+11,P6100,Cuantitativa Discreta,¿A cual de los siguientes discrete numeric ¿A cuál de los siguientes regímenes de
+12,P6210,Cuantitativa Discreta,¿Cuál es el nivel educativo más discrete numeric ¿Cuál es el nivel educativo más alto
+13,P6210s1,Cuantitativa Discreta,Grado escolar aprobado  contin numeric Grado 
+14,P6240,Cuantitativa Discreta,¿En que actividad ocupó...... la discrete numeric ¿en que actividad ocupó...... la mayor parte
+15,Oficio,Cuantitativa Discreta,¿qué hace……en este trabajo?  discrete numeric ¿qué hace……en este trabajo? 
+16,P6426,Cuantitativa Discreta,¿cuanto tiempo lleva ... contin numeric ¿cuanto tiempo lleva ... Trabajando en esta
+17,P6430,Cuantitativa Discreta,En este trabajo es …. (posición discrete numeric En este trabajo…..es: a. Obrero o
+18,P6500,Cuantitativa Discreta,Antes de descuentos ¿cuánto contin numeric Antes de descuentos ¿cuánto ganó .... el
+19,P6510,Cuantitativa Discreta,¿el mes pasado recibio ingresos discrete numeric El mes pasado recibió ingresos por
+20,P6510s1,Cuantitativa Discreta,¿cuánto recibió por horas extras?  contin numeric El mes pasado recibió ingresos por
+21,P6510s2,Cuantitativa Discreta,¿incluyó este valor en los ingresos discrete numeric El mes pasado recibió ingresos por
+22,P6545,Cuantitativa Discreta,El mes pasado recibió a. Primas discrete numeric El mes pasado recibió ...: a. Primas?
+23,P6545s1,Cuantitativa Discreta,¿cuánto recibió por primas?  contin numeric El mes pasado recibió ...: - a. Primas?
+24,P6545s2,Cuantitativa Discreta,¿incluyó este valor en los ingresos discrete numeric El mes pasado recibió ...: - a. Primas?
+25,P6580,Cuantitativa Discreta,¿el mes pasado recibió b. discrete numeric El mes pasado recibió ...: b. Algún tipo de
+26,P6580s1,Cuantitativa Discreta,¿cuánto recibió por bonificaciones?  contin numeric El mes pasado recibió ...: - b. Algún tipo de
+27,P6580s2,Cuantitativa Discreta,¿incluyó este valor en los ingresos discrete numeric El mes pasado recibió ...: - b. Algún tipo de
+28,P6585s1,Cuantitativa Discreta,¿el mes pasado recibió a. Auxilio discrete numeric ¿cuál o cuáles de los siguientes subsidios
+29,P6585s1a1,Cuantitativa Discreta,¿cuánto recibió por subsidio de contin numeric ¿Cuál o cuáles de los siguientes subsidios
+30,P6585s1a2,Cuantitativa Discreta,¿incluyó este valor en los ingresos discrete numeric ¿cuál o cuáles de los siguientes subsidios
+31,P6585s2,Cuantitativa Discreta,¿el mes pasado recibió b. Auxilio discrete numeric ¿cuál o cuáles de los siguientes subsidios
+32,P6585s2a1,Cuantitativa Discreta,¿cuánto recibió por subsidio de contin numeric ¿cuál o cuáles de los siguientes subsidios
+33,P6585s2a2,Cuantitativa Discreta,¿incluyó este valor en los ingresos discrete numeric ¿cuál o cuáles de los siguientes subsidios
+34,P6585s3,Cuantitativa Discreta,¿el mes pasado recibió c. Subsidio discrete numeric ¿cuál o cuáles de los siguientes subsidios
+35,P6585s3a1,Cuantitativa Discreta,¿cuánto recibió por subsidio contin numeric ¿cuál o cuáles de los siguientes subsidios
+36,P6585s3a2,Cuantitativa Discreta,¿incluyó este valor en los ingresos discrete numeric ¿cuál o cuáles de los siguientes subsidios
+37,P6585s4,Cuantitativa Discreta,¿el mes pasado recibio d. discrete numeric ¿cuál o cuáles de los siguientes subsidios
+38,P6585s4a1,Cuantitativa Discreta,¿cuánto recibio por subsidio contin numeric ¿cuál o cuáles de los siguientes subsidios
+39,P6585s4a2,Cuantitativa Discreta,¿incluyó este valor en los ingresos discrete numeric ¿cuál o cuáles de los siguientes subsidios
+40,P6590,Cuantitativa Discreta,"¿además del salario en dinero,¿el discrete numeric Además del salario en dinero, ¿el mes"
+41,P6590s1,Cuantitativa Discreta,"¿en cuánto estima lo que recibió? contin numeric Además del salario en dinero, ¿el mes"
+42,P6600,Cuantitativa Discreta,"¿además del salario en dinero,¿el discrete numeric Además del salario en dinero, ¿el mes"
+43,P6600s1,Cuantitativa Discreta,"¿en cuánto estima lo que recibió? contin numeric Además del salario en dinero, ¿el mes"
+44,P6610,Cuantitativa Discreta,¿normalmente... Utiliza transporte discrete numeric ¿Normalmente... Utiliza transporte de la
+45,P6610s1,Cuantitativa Discreta,¿en cuánto estima lo que contin numeric ¿Normalmente... Utiliza transporte de la
+46,P6620,Cuantitativa Discreta,"Además del salario en dinero, ¿el discrete numeric Además del salario en dinero, ¿el mes"
+47,P6620s1,Cuantitativa Discreta,"¿en cuánto estima lo que recibió? contin numeric Además del salario en dinero, ¿el mes"
+48,P6630s1,Cuantitativa Discreta,En los últimos 12 meses recibió … discrete numeric En los últimos 12 meses recibió: a. Prima
+49,P6630s1a1,Cuantitativa Discreta,¿cuánto recibio? $____________  contin numeric En los últimos 12 meses recibió: - a. Prima
+50,P6630s2,Cuantitativa Discreta,En los últimos 12 meses recibió ... discrete numeric En los últimos 12 meses recibió: b. Prima
+51,P6630s2a1,Cuantitativa Discreta,¿cuánto recibio? $____________  contin numeric En los últimos 12 meses recibió: - b. Prima
+52,P6630s3,Cuantitativa Discreta,En los últimos 12 meses recibió … discrete numeric En los últimos 12 meses recibió: c. Prima
+53,P6630s3a1,Cuantitativa Discreta,¿cuánto recibió? $____________  contin numeric En los últimos 12 meses recibió: - c. Prima
+54,P6630s4,Cuantitativa Discreta,En los últimos 12 meses recibio ... discrete numeric En los últimos 12 meses recibió: d. Viáticos
+55,P6630s4a1,Cuantitativa Discreta,¿cuánto recibió? $____________  contin numeric En los últimos 12 meses recibió:- d.
+56,P6630s6,Cuantitativa Discreta,En los últimos 12 meses recibio … discrete numeric En los últimos 12 meses recibió: e.
+57,P6630s6a1,Cuantitativa Discreta,¿cuánto recibió? $____________  contin numeric En los últimos 12 meses recibió: - e.
+58,P6750,Cuantitativa Discreta,¿cuál fue la ganancia neta o los contin numeric ¿cuál fue la ganancia neta o los honorarios
+59,P6760,Cuantitativa Discreta,¿ a cuántos meses corresponde lo contin numeric ¿a cuántos meses corresponde lo que
+60,P550,Cuantitativa Discreta,¿cuál fue la ganancia neta del contin numeric ¿cuál fue la ganancia neta del negocio o de
+61,P6800,Cuantitativa Discreta,¿cuántas horas a la semana contin numeric ¿cuántas horas a la semana trabaja
+62,P6870,Cuantitativa Discreta,¿cuántas personas en total tiene discrete numeric ¿cuántas personas en total tiene la
+63,P6920,Cuantitativa Discreta,¿está... Cotizando actualmente a discrete numeric ¿Está... Cotizando actualmente a un fondo
+64,P7040,Cuantitativa Discreta,"Además de la ocupación principal, discrete numeric Además de la ocupación principal, ¿...."
+65,P7045,Cuantitativa Discreta,¿cuántas horas trabajó ... La contin numeric ¿cuántas horas trabajó ... La semana
+66,P7050,Cuantitativa Discreta,En ese segundo trabajo…..es: discrete numeric En ese segundo trabajo…..es: a. Obrero o
+67,P7070,Cuantitativa Discreta,¿cuánto recibió o ganó ….. el mes contin numeric ¿cuánto recibió o ganó ….. el mes pasado
+68,P7090,Cuantitativa Discreta,Además de las horas que trabaja discrete numeric Además de las horas que trabaja
+69,P7110,Cuantitativa Discreta,"Durante las últimas 4 semanas, ¿ discrete numeric Durante las últimas 4 semanas, ¿ ...... hizo"
+70,P7120,Cuantitativa Discreta,Si la semana pasada le hubiera discrete numeric Si la semana pasada le hubiera resultado
+71,P7140s1,Cuantitativa Discreta,¿Por que motivos ....... desea discrete numeric ¿por qué motivos ....... Desea cambiar de
+72,P7140s2,Cuantitativa Discreta,¿Por que motivos ....... desea discrete numeric ¿por que motivos ....... Desea cambiar de
+73,P7150,Cuantitativa Discreta,"Durante las ÚLTIMAS 4 SEMANAS, discrete numeric Durante las últimas 4 semanas, ¿...... hizo"
+74,P7160,Cuantitativa Discreta,Si le resultara un nuevo trabajo o discrete numeric Si le resultara un nuevo trabajo o empleo
+75,P7310,Cuantitativa Discreta,¿...... ha buscado trabajo por discrete numeric ¿...... ha buscado trabajo por primera vez o
+76,P7350,Cuantitativa Discreta,En este último trabajo era: … discrete numeric En este último trabajo era: a. Obrero o
+77,P7422,Cuantitativa Discreta,¿Recibió o ganó el mes pasado discrete numeric ¿recibió o ganó el mes pasado ingresos por
+78,P7422s1,Cuantitativa Discreta,¿Cuánto? $_________________  contin numeric ¿recibió o ganó el mes pasado ingresos por
+79,P7472,Cuantitativa Discreta,¿recibió o ganó el mes pasado discrete numeric ¿recibió o ganó el mes pasado ingresos por
+80,P7472s1,Cuantitativa Discreta,¿cuánto? $_________________  contin numeric ¿recibió o ganó el mes pasado ingresos por
+81,P7495,Cuantitativa Discreta,"El mes pasado, ¿recibió pagos por discrete numeric El mes pasado, ¿recibió pagos por"
+82,P7500s1,Cuantitativa Discreta,"¿El mes pasado, recibió pagos por: discrete numeric ¿el mes pasado, recibió pagos por: a."
+83,P7500s1a1,Cuantitativa Discreta,"Valor mes pasado $ contin numeric ¿el mes pasado, recibió pagos por: - a."
+84,P7500s2,Cuantitativa Discreta,"¿El mes pasado recibió pagos por discrete numeric ¿el mes pasado, recibió pagos por: b."
+85,P7500s2a1,Cuantitativa Discreta,"Valor mes pasado $ contin numeric ¿el mes pasado, recibió pagos por: - b."
+86,P7500s3,Cuantitativa Discreta,"¿El mes pasado recibió pagos por discrete numeric ¿el mes pasado, recibió pagos por: c."
+87,P7500s3a1,Cuantitativa Discreta,"Valor mes pasado $ contin numeric ¿el mes pasado, recibió pagos por: - c."
+88,P7505,Cuantitativa Discreta,"Durante los últimos doce meses, discrete numeric Durante los últimos doce meses, ¿recibió"
+89,P7510s1,Cuantitativa Discreta,"Durante los últimos 12 meses, discrete numeric Durante los últimos doce meses recibió: a."
+90,P7510s1a1,Cuantitativa Discreta,Valor $ ___________  contin numeric Durante los últimos doce meses recibió: - a.
+91,P7510s2,Cuantitativa Discreta,"Durante los últimos 12 meses, discrete numeric Durante los últimos doce meses recibió: b."
+92,P7510s2a1,Cuantitativa Discreta,Valor $ ___________  contin numeric Durante los últimos doce meses recibió: - b.
+93,P7510s3,Cuantitativa Discreta,"Durante los últimos 12 meses, discrete numeric Durante los últimos doce meses recibió: c."
+94,P7510s3a1,Cuantitativa Discreta,Valor $ ___________  contin numeric Durante los últimos doce meses recibió: - c.
+95,P7510s5,Cuantitativa Discreta,"Durante los últimos 12 meses, discrete numeric Durante los últimos doce meses recibió: d."
+96,P7510s5a1,Cuantitativa Discreta,Valor $ ___________  contin numeric Durante los últimos doce meses recibió: - d.
+97,P7510s6,Cuantitativa Discreta,"Durante los últimos 12 meses, discrete numeric Durante los últimos doce meses recibió: e."
+98,P7510s6a1,Cuantitativa Discreta,Valor $ ___________  contin numeric Durante los últimos doce meses recibió: - e.
+99,P7510s7,Cuantitativa Discreta,"Durante los últimos 12 meses, discrete numeric Durante los últimos doce meses recibió: f."
+100,P7510s7a1,Cuantitativa Discreta,Valor $ ___________  contin numeric Durante los últimos doce meses recibió: - f.
+101,Pet,Binaria,Población en edad de trabajar 1: discrete numeric Población en edad de trabajar 
+102,Oc,Binaria,Ocupado 1: sí  discrete numeric Ocupado 
+103,Des,Binaria,Desocupado 1: sí  discrete numeric Desocupados 
+104,Ina,Binaria,Inactivo 1: sí  discrete numeric Inactivos 
+105,Impa,Cuantitativa Continua,Ingreso monetario de la primera contin numeric Ingreso monetario de la primera actividad
+106,Isa,Cuantitativa Discreta,Ingreso monetario de la segunda contin numeric Ingreso monetario de la segunda actividad
+107,Ie,Cuantitativa Discreta,Ingreso en especie antes de contin numeric Ingreso en especie antes de imputación 
+108,Imdi,Cuantitativa Discreta,Ingreso por trabajo de contin numeric Ingreso por trabajo de desocupados e
+109,Iof1,Cuantitativa Continua,Ingreso por intereses y dividendos contin numeric Ingreso por intereses y dividendos antes
+110,Iof2,Cuantitativa Discreta,Ingreso por jubilaciones y contin numeric Ingreso por jubilaciones y pensiones antes
+111,Iof3h,Cuantitativa Continua,"Ingreso por ayudas de hogares, contin numeric Ingreso por ayudas de hogares, antes de"
+112,Iof3i,Cuantitativa Continua,"Ingreso por ayudas de contin numeric Ingreso por ayudas de instituciones, antes"
+113,Iof6,Cuantitativa Discreta,Ingreso por arriendos antes de contin numeric Ingreso por arriendos antes de imputación 
+114,Cclasnr2,Binaria,Estado de impa 1:faltante 0: discrete numeric Estado de impa 0: observado 
+115,Cclasnr3,Binaria,Estado de isa 1:faltante 0: discrete numeric Estado de isa 0: observado 
+116,Cclasnr4,Binaria,Estado de ie 1:faltante 0: discrete numeric Estado de ie 0: observado 
+117,Cclasnr5,Binaria,Estado de imdi 1:faltante 0: discrete numeric Estado de imdi 0: observado 
+118,Cclasnr6,Binaria,Estado de iof1 1:faltante 0: discrete numeric Estado de iof1 0: observado 
+119,Cclasnr7,Binaria,Estado de iof2 1:faltante 0: discrete numeric Estado de iof2 0: observado 
+120,Cclasnr8,Binaria,Estado de iof3 1:faltante 0: discrete numeric Estado de iof3 0: observado 
+121,Cclasnr11,Binaria,Estado de iof6 1:faltante 0: discrete numeric Estado de iof6 0: observado 
+122,Impaes,Cuantitativa Discreta,Ingreso monetario de la primera contin numeric Ingreso monetario de la primera actividad
+123,Isaes,Cuantitativa Discreta,Ingreso monetario de la segunda contin numeric Ingreso monetario de la segunda actividad
+124,Iees,Cuantitativa Discreta,Ingreso en especie imputado (sólo contin numeric Ingreso en especie imputado (sólo para
+125,Imdies,Cuantitativa Discreta,Ingreso por trabajo de contin numeric Ingreso por trabajo de desocupados e
+126,Iof1es,Cuantitativa Discreta,Ingreso por intereses y dividendos contin numeric Ingreso por intereses y dividendos
+127,Iof2es,Cuantitativa Discreta,Ingreso por jubilaciones y contin numeric Ingreso por jubilaciones y pensiones
+128,Iof3hes,Cuantitativa Discreta,"Ingreso por ayudas de hogares, contin numeric Ingreso por ayudas de hogares, imputado"
+129,Iof3ies,Cuantitativa Discreta,"Ingreso por ayudas de contin numeric Ingreso por ayudas de instituciones,"
+130,Iof6es,Cuantitativa Discreta,Ingreso por arriendos imputado contin numeric Ingreso por arriendos imputado 
+131,Ingtotob,Cuantitativa Continua,Ingreso total observado  contin numeric Ingreso total observado 
+132,Ingtotes,Cuantitativa Discreta,Ingreso total imputado  contin numeric Ingreso total imputado 
+133,Ingtot,Cuantitativa Continua,Ingreso total  contin numeric Ingreso total 
+134,Fex_c,Cuantitativa Continua,Factor de expansión anualizado  contin numeric Factor de expansión 
+135,Fex_c,Cuantitativa Continua,Factor de expansión anualizado  contin numeric Factor de expansión anual 
+136,Depto,Cuantitativa Discreta,Departamento  discrete character Departamento 
+137,Depto,Cuantitativa Discreta,Departamento  discrete character Departamento 
+138,Fex_dpto,Cuantitativa Continua,Factor Expansión departamental  discrete numeric Factor Expansión departamental 
+139,Fex_dpto,Cuantitativa Continua,Factor Expansión departamental  discrete numeric Factor Expansión departamental 
