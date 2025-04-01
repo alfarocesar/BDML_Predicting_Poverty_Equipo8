@@ -1,0 +1,29 @@
+,Variable,Tipo,Descripción
+0,id,Categórica,
+1,Clase,Binaria,Clase  discrete character Clase: 1 cabecera 2 resto 
+2,Clase,Binaria,"1. Cabecera, 2. Resto (centros discrete character Clase: 1 cabecera 2 resto "
+3,Dominio,Categórica,"Dominio  discrete character Dominio cada una de las 24 a.M., otras"
+4,Dominio,Categórica,"Cada una de las 24 a.M., otras discrete character Dominio cada una de las 24 a.M., otras"
+5,P5000,Cuantitativa Discreta,Incluyendo sala-comedor ¿de discrete numeric Incluyendo sala-comedor ¿de cuántos
+6,P5010,Cuantitativa Discreta,¿En cuántos de esos cuartos discrete numeric ¿en cuántos de esos cuartos duermen las
+7,P5090,Cuantitativa Discreta,La vivienda ocupada por este discrete numeric La vivienda ocupada por este hogar es: a.
+8,P5100,Cuantitativa Discreta,¿Cuánto pagan mensualmente contin numeric ¿cuánto pagan mensualmente por cuota
+9,P5130,Cuantitativa Discreta,Si tuviera que pagar arriendo por contin numeric Si tuviera que pagar arriendo por esta
+10,P5140,Cuantitativa Discreta,¿ Cuánto pagan mensualmente contin numeric ¿cuánto pagan mensualmente por arriendo?
+11,Nper,Cuantitativa Discreta,Personas en el hogar  contin numeric Número de personas en el hogar 
+12,Npersug,Cuantitativa Discreta,Número de personas en la unidad contin numeric Número de personas en la unidad de gasto 
+13,Ingtotug,Cuantitativa Continua,Ingreso total de la unidad de contin numeric Ingreso total de la unidad de gasto antes
+14,Ingtotugarr,Cuantitativa Continua,Ingreso total de la unidad de contin numeric Ingreso total de la unidad de gasto con
+15,Ingpcug,Cuantitativa Continua,Ingreso percápita de la unidad de contin numeric Ingreso percápita de la unidad de gasto
+16,Li,Cuantitativa Continua,Línea de indigencia  contin numeric Línea de indigencia 
+17,Lp,Cuantitativa Continua,Línea de pobreza  contin numeric Línea de pobreza 
+18,Pobre,Binaria,Pobre=1 No pobre=0  discrete numeric Pobre 0 No pobre 1 Pobre 
+19,Indigente,Binaria,Indigente=1 No indigente=0  discrete numeric Indigente 0 No indigente 1 Indigente 
+20,Npobres,Cuantitativa Discreta,Número de pobres  contin numeric Número de pobres 
+21,Nindigentes,Cuantitativa Discreta,Número de Indigentes  contin numeric Número de indigentes 
+22,Fex_c,Cuantitativa Continua,Factor de expansión anualizado  contin numeric Factor de expansión 
+23,Fex_c,Cuantitativa Continua,Factor de expansión anualizado  contin numeric Factor de expansión anual 
+24,Depto,Cuantitativa Discreta,Departamento  discrete character Departamento 
+25,Depto,Cuantitativa Discreta,Departamento  discrete character Departamento 
+26,Fex_dpto,Cuantitativa Continua,Factor Expansión departamental  discrete numeric Factor Expansión departamental 
+27,Fex_dpto,Cuantitativa Continua,Factor Expansión departamental  discrete numeric Factor Expansión departamental 
