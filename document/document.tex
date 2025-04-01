@@ -10,7 +10,7 @@
 \usepackage[T1]{fontenc}     % Mejor soporte de fuentes en LaTeX
 \usepackage[spanish]{babel}  % Manejo correcto de idioma español
 \usepackage{amsfonts}
-\usepackage{graphicx}
+\usepackage{graphicx} % Necesario para incluir imágenes
 \usepackage{xcolor}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -29,6 +29,7 @@
 \usepackage{units}
 \usepackage{placeins}
 \usepackage{booktabs,multirow}
+\usepackage{booktabs} % Para tablas mejoradas
 
 % Bibliografía
 \usepackage{natbib}
@@ -62,7 +63,6 @@
 
 \author{%
 \begin{center}
-
 Harold Stiven Acuña\\
 José David Cuervo\\
 José David Dávila\\
@@ -120,6 +120,31 @@ Metodologías aplicadas para la adecuación de los datos.
 
 \subsection{Análisis descriptivo}
 Exploración de la variabilidad de los datos con tablas y gráficos.
+
+% Este es un ejemplo de como incorporar las gráficas en el documento
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../views/figures/poverty_distribution.png}
+    \caption{Distribución de la pobreza}
+    \label{fig:distribución_pobreza}
+\end{figure}
+
+% Este es un ejemplo de como incorporar tablas en el documento
+\input{../views/tables/descriptive_statistics.tex}
+\input{../views/tables/analisis_categoricas_pobreza.tex}
+\input{../views/tables/categorical_variables_summary.tex}
+\input{../views/tables/correlacion_variables_pobreza.tex}
+\input{../views/tables/missing_values_analysis.tex}
+\input{../views/tables/numeric_variables_summary.tex}
+\input{../views/tables/outlier_analysis.tex}
+\input{../views/tables/poverty_distribution.tex}
+\input{../views/tables/train_summary_statistics.tex}
+\input{../views/tables/variables_candidatas_eliminar.tex}
+\input{../views/tables/variables_candidatas_one_hot.tex}
+\input{../views/tables/variables_clasificacion.tex}
+\input{../views/tables/variables_con_outliers.tex}
+\input{../views/tables/variables_importantes.tex}
+\input{../views/tables/variables_redundantes.tex}
 
 \section{Modelos y Resultados}
 \subsection{Metodología}
