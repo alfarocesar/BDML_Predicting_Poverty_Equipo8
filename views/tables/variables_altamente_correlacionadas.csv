@@ -1,0 +1,12 @@
+"variable1","variable2","correlacion"
+"Nper","n_miembros",1
+"Nper","Npersug",0.996977320388416
+"Npersug","n_miembros",0.996977320388416
+"Nper","n_mujeres",0.783294103055539
+"n_miembros","n_mujeres",0.783294103055539
+"Ingtotugarr","Ingpcug",0.780460117696388
+"edad_promedio","jefe_edad",0.780163316016088
+"Npersug","n_mujeres",0.77897209907477
+"Npersug","n_menores",0.76335649287704
+"Nper","n_menores",0.763139632389513
+"n_miembros","n_menores",0.763139632389513
