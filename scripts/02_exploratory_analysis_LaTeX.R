@@ -18,6 +18,8 @@ pacman::p_load(
   tidyverse,   # Manipulación de datos y visualización
   skimr,       # Resumen de datos
   knitr,       # Para generar tablas
+  xtable,      # Para exportar tablas a LaTeX
+  kableExtra,  # Personalización avanzada de tablas
   stargazer    # Tablas estadísticas en formato LaTeX
 )
 
@@ -57,8 +59,15 @@ variables_info <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# Guardar esta información
-write.csv(variables_info, "views/tables/variables_clasificacion.csv", row.names = FALSE)
+# Guardar esta información en formato LaTeX
+print(xtable(variables_info, 
+             caption = "Clasificación de Variables", 
+             label = "tab:variables"),
+      file = "views/tables/variables_clasificacion.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
 
 # Mostrar las primeras filas
 cat("Clasificación de variables (primeras filas):\n")
@@ -73,9 +82,18 @@ cat("Realizando análisis descriptivo general...\n")
 # Resumen estadístico completo del conjunto de entrenamiento
 train_summary <- skim(train_data)
 
-# Exportar resumen estadístico a CSV
+# Exportar resumen estadístico
 train_summary_export <- as.data.frame(train_summary)
-write.csv(train_summary_export, "views/tables/train_summary_statistics.csv", row.names = FALSE)
+
+# Guardar en formato LaTeX
+print(xtable(train_summary_export, 
+             caption = "Resumen Estadístico del Conjunto de Entrenamiento", 
+             label = "tab:train_summary"),
+      file = "views/tables/train_summary_statistics.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
 
 # Crear tabla con estadísticas descriptivas para variables numéricas
 # Excluir variables no numéricas y la id
@@ -83,15 +101,15 @@ numeric_vars <- train_data %>%
   select(-id) %>%  # Excluir id que es identificador alfanumérico
   select_if(is.numeric)  # Seleccionar solo variables numéricas
 
-# Generar estadísticas descriptivas usando stargazer
-stat_desc <- stargazer(numeric_vars, 
-                       type = "text", 
-                       title = "Estadísticas Descriptivas de Variables Numéricas",
-                       digits = 2,
-                       out = "views/tables/descriptive_statistics.tex")
+# Generar estadísticas descriptivas usando stargazer directamente a LaTeX
+stargazer(numeric_vars, 
+          title = "Estadísticas Descriptivas de Variables Numéricas",
+          digits = 2,
+          label = "tab:descriptive_stats",
+          out = "views/tables/descriptive_statistics.tex")
 
 # Mostrar estadísticas de variables numéricas en consola
-print(stat_desc)
+stargazer(numeric_vars, type = "text", title = "Estadísticas Descriptivas de Variables Numéricas")
 
 ################################################################################
 # 4. ANÁLISIS DE LA DISTRIBUCIÓN DE POBREZA (VARIABLE OBJETIVO)                #
@@ -104,8 +122,15 @@ poverty_distribution <- train_data %>%
   count(Pobre) %>%
   mutate(proportion = n / sum(n) * 100)
 
-# Guardar datos de distribución
-write.csv(poverty_distribution, "views/tables/poverty_distribution.csv", row.names = FALSE)
+# Guardar en formato LaTeX
+print(xtable(poverty_distribution, 
+             caption = "Distribución de la Variable Objetivo (Pobreza)", 
+             label = "tab:poverty_distribution"),
+      file = "views/tables/poverty_distribution.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
 
 # Mostrar desequilibrio de clases en consola
 cat("Distribución de la variable objetivo:\n")
@@ -132,8 +157,19 @@ missing_analysis <- data.frame(
 ) %>%
   arrange(desc(pct_missing))
 
-# Guardar análisis de valores faltantes
-write.csv(missing_analysis, "views/tables/missing_values_analysis.csv", row.names = FALSE)
+# Guardar análisis de valores faltantes en formato LaTeX
+# Solo mostrar variables con valores faltantes
+missing_table <- missing_analysis[missing_analysis$pct_missing > 0, ]
+if(nrow(missing_table) > 0) {
+  print(xtable(missing_table, 
+               caption = "Variables con Valores Faltantes", 
+               label = "tab:missing_values"),
+        file = "views/tables/missing_values_analysis.tex",
+        include.rownames = FALSE,
+        floating = TRUE,
+        latex.environments = "center",
+        booktabs = TRUE)
+}
 
 # Mostrar variables con valores faltantes
 cat("Variables con valores faltantes (ordenadas por % de NA):\n")
@@ -179,8 +215,15 @@ for (var in cat_vars) {
   }
 }
 
-# Guardar resumen de variables categóricas
-write.csv(cat_summary, "views/tables/categorical_variables_summary.csv", row.names = FALSE)
+# Guardar resumen de variables categóricas en formato LaTeX
+print(xtable(cat_summary, 
+             caption = "Resumen de Variables Categóricas", 
+             label = "tab:cat_summary"),
+      file = "views/tables/categorical_variables_summary.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
 
 # Mostrar resumen
 cat("Resumen de variables categóricas:\n")
@@ -225,8 +268,15 @@ for (var in num_vars) {
   }
 }
 
-# Guardar resumen de variables numéricas
-write.csv(num_summary, "views/tables/numeric_variables_summary.csv", row.names = FALSE)
+# Guardar resumen de variables numéricas en formato LaTeX
+print(xtable(num_summary, 
+             caption = "Resumen de Variables Numéricas", 
+             label = "tab:num_summary"),
+      file = "views/tables/numeric_variables_summary.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
 
 # Mostrar variables con baja variabilidad
 cat("Variables numéricas con baja variabilidad (CV < 5%):\n")
@@ -279,8 +329,15 @@ outlier_analysis <- do.call(rbind, lapply(outlier_vars, function(var) {
   analyze_outliers_iqr(train_data, var)
 }))
 
-# Guardar análisis de outliers
-write.csv(outlier_analysis, "views/tables/outlier_analysis.csv", row.names = FALSE)
+# Guardar análisis de outliers en formato LaTeX
+print(xtable(outlier_analysis, 
+             caption = "Análisis de Outliers (Método IQR)", 
+             label = "tab:outliers"),
+      file = "views/tables/outlier_analysis.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
 
 # Mostrar variables con más outliers
 cat("Variables con mayor porcentaje de outliers:\n")
@@ -318,8 +375,16 @@ if (ncol(corr_vars) >= 2) {
   tryCatch({
     correlation_matrix <- cor(corr_vars, use = "pairwise.complete.obs")
     
-    # Guardar matriz de correlación
-    write.csv(correlation_matrix, "views/tables/correlation_matrix.csv", row.names = TRUE)
+    # Guardar matriz de correlación en formato LaTeX
+    print(xtable(correlation_matrix, 
+                 caption = "Matriz de Correlación entre Variables Numéricas", 
+                 label = "tab:correlation_matrix"),
+          file = "views/tables/correlation_matrix.tex",
+          include.rownames = TRUE,
+          include.colnames = TRUE,
+          floating = TRUE,
+          latex.environments = "center",
+          booktabs = TRUE)
     
     # Identificar pares de variables altamente correlacionadas (|r| > 0.7)
     high_corr_pairs <- data.frame(
@@ -348,8 +413,15 @@ if (ncol(corr_vars) >= 2) {
     if (nrow(high_corr_pairs) > 0) {
       high_corr_pairs <- high_corr_pairs[order(-abs(high_corr_pairs$correlacion)), ]
       
-      # Guardar pares de alta correlación
-      write.csv(high_corr_pairs, "views/tables/variables_altamente_correlacionadas.csv", row.names = FALSE)
+      # Guardar pares de alta correlación en formato LaTeX
+      print(xtable(high_corr_pairs, 
+                   caption = "Variables Altamente Correlacionadas (|r| > 0.7)", 
+                   label = "tab:high_correlation"),
+            file = "views/tables/variables_altamente_correlacionadas.tex",
+            include.rownames = FALSE,
+            floating = TRUE,
+            latex.environments = "center",
+            booktabs = TRUE)
       
       # Mostrar pares de variables altamente correlacionadas
       cat("Pares de variables altamente correlacionadas (|r| > 0.7):\n")
@@ -357,7 +429,20 @@ if (ncol(corr_vars) >= 2) {
     } else {
       cat("No se encontraron pares de variables con correlación |r| > 0.7\n")
       # Crear un archivo vacío para mantener consistencia
-      write.csv(high_corr_pairs, "views/tables/variables_altamente_correlacionadas.csv", row.names = FALSE)
+      high_corr_pairs <- data.frame(
+        variable1 = character(),
+        variable2 = character(),
+        correlacion = numeric(),
+        stringsAsFactors = FALSE
+      )
+      print(xtable(high_corr_pairs, 
+                   caption = "Variables Altamente Correlacionadas (|r| > 0.7)", 
+                   label = "tab:high_correlation"),
+            file = "views/tables/variables_altamente_correlacionadas.tex",
+            include.rownames = FALSE,
+            floating = TRUE,
+            latex.environments = "center",
+            booktabs = TRUE)
     }
   }, warning = function(w) {
     cat("Advertencia en el cálculo de correlaciones:", conditionMessage(w), "\n")
@@ -373,7 +458,14 @@ if (ncol(corr_vars) >= 2) {
       correlacion = numeric(),
       stringsAsFactors = FALSE
     )
-    write.csv(high_corr_pairs, "views/tables/variables_altamente_correlacionadas.csv", row.names = FALSE)
+    print(xtable(high_corr_pairs, 
+                 caption = "Variables Altamente Correlacionadas (|r| > 0.7)", 
+                 label = "tab:high_correlation"),
+          file = "views/tables/variables_altamente_correlacionadas.tex",
+          include.rownames = FALSE,
+          floating = TRUE,
+          latex.environments = "center",
+          booktabs = TRUE)
   })
 } else {
   cat("No hay suficientes variables numéricas con varianza distinta de cero para calcular correlaciones.\n")
@@ -384,7 +476,14 @@ if (ncol(corr_vars) >= 2) {
     correlacion = numeric(),
     stringsAsFactors = FALSE
   )
-  write.csv(high_corr_pairs, "views/tables/variables_altamente_correlacionadas.csv", row.names = FALSE)
+  print(xtable(high_corr_pairs, 
+               caption = "Variables Altamente Correlacionadas (|r| > 0.7)", 
+               label = "tab:high_correlation"),
+        file = "views/tables/variables_altamente_correlacionadas.tex",
+        include.rownames = FALSE,
+        floating = TRUE,
+        latex.environments = "center",
+        booktabs = TRUE)
 }
 
 ################################################################################
@@ -411,8 +510,15 @@ for (var in setdiff(num_vars, "Pobre")) {
 # Ordenar por valor absoluto de correlación
 numerical_target_corr <- numerical_target_corr[order(-abs(numerical_target_corr$correlacion_con_pobreza)), ]
 
-# Guardar correlaciones con la variable objetivo
-write.csv(numerical_target_corr, "views/tables/correlacion_variables_pobreza.csv", row.names = FALSE)
+# Guardar correlaciones con la variable objetivo en formato LaTeX
+print(xtable(head(numerical_target_corr, 15), 
+             caption = "Correlación de Variables Numéricas con Pobreza", 
+             label = "tab:poverty_correlation"),
+      file = "views/tables/correlacion_variables_pobreza.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
 
 # Mostrar variables numéricas más correlacionadas con pobreza
 cat("Variables numéricas más correlacionadas con pobreza:\n")
@@ -455,8 +561,15 @@ for (var in cat_vars) {
 if (nrow(cat_target_analysis) > 0) {
   cat_target_analysis <- cat_target_analysis[order(-cat_target_analysis$rango_tasas), ]
   
-  # Guardar análisis
-  write.csv(cat_target_analysis, "views/tables/analisis_categoricas_pobreza.csv", row.names = FALSE)
+  # Guardar análisis en formato LaTeX
+  print(xtable(cat_target_analysis, 
+               caption = "Relación entre Variables Categóricas y Tasa de Pobreza", 
+               label = "tab:cat_poverty"),
+        file = "views/tables/analisis_categoricas_pobreza.tex",
+        include.rownames = FALSE,
+        floating = TRUE,
+        latex.environments = "center",
+        booktabs = TRUE)
   
   # Mostrar variables categóricas más discriminativas para pobreza
   cat("Variables categóricas con mayor variabilidad en tasas de pobreza:\n")
@@ -507,7 +620,7 @@ if (length(low_var_vars) > 0) {
 
 # 2. Variables potencialmente redundantes
 variables_redundantes <- data.frame()
-if (nrow(high_corr_pairs) > 0) {
+if (exists("high_corr_pairs") && nrow(high_corr_pairs) > 0) {
   # Para cada par altamente correlacionado, proponer eliminar la menos correlacionada con el objetivo
   for (i in 1:nrow(high_corr_pairs)) {
     var1 <- high_corr_pairs$variable1[i]
@@ -553,68 +666,58 @@ variables_outliers <- outlier_analysis %>%
   select(variable, pct_outliers, min_value, max_value) %>%
   arrange(desc(pct_outliers))
 
-# Guardar resúmenes para toma de decisiones
-write.csv(variables_eliminar, "views/tables/variables_candidatas_eliminar.csv", row.names = FALSE)
-write.csv(variables_redundantes, "views/tables/variables_redundantes.csv", row.names = FALSE)
-write.csv(variables_importantes, "views/tables/variables_importantes.csv", row.names = FALSE)
-write.csv(variables_one_hot, "views/tables/variables_candidatas_one_hot.csv", row.names = FALSE)
-write.csv(variables_outliers, "views/tables/variables_con_outliers.csv", row.names = FALSE)
+# Guardar resúmenes para toma de decisiones en formato LaTeX
+# Variables candidatas a eliminar
+print(xtable(variables_eliminar, 
+             caption = "Variables Candidatas a Eliminar", 
+             label = "tab:variables_eliminar"),
+      file = "views/tables/variables_candidatas_eliminar.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
+
+# Variables redundantes
+print(xtable(variables_redundantes, 
+             caption = "Variables Redundantes y Propuestas de Eliminación", 
+             label = "tab:variables_redundantes"),
+      file = "views/tables/variables_redundantes.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
+
+# Variables importantes
+print(xtable(variables_importantes, 
+             caption = "Variables Más Correlacionadas con Pobreza", 
+             label = "tab:variables_importantes"),
+      file = "views/tables/variables_importantes.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
+
+# Variables para one-hot encoding
+print(xtable(variables_one_hot, 
+             caption = "Variables Categóricas Candidatas para One-Hot Encoding", 
+             label = "tab:variables_one_hot"),
+      file = "views/tables/variables_candidatas_one_hot.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
+
+# Variables con outliers
+print(xtable(variables_outliers, 
+             caption = "Variables con Mayor Porcentaje de Outliers", 
+             label = "tab:variables_outliers"),
+      file = "views/tables/variables_con_outliers.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
 
 cat("Resúmenes para toma de decisiones guardados en carpeta views/tables/\n")
-
-################################################################################
-# 12. RESUMEN DE HALLAZGOS Y RECOMENDACIONES                                   #
-################################################################################
-
-cat("Generando resumen de hallazgos y recomendaciones...\n")
-
-# Crear un archivo de texto con los hallazgos principales y recomendaciones
-findings <- c(
-  "# RESUMEN DE HALLAZGOS DEL ANÁLISIS EXPLORATORIO",
-  "",
-  "## DISTRIBUCIÓN DE LA VARIABLE OBJETIVO:",
-  paste0("- El ", round(poverty_distribution$proportion[poverty_distribution$Pobre == 1], 1), 
-         "% de los hogares en la muestra son pobres."),
-  paste0("- Existe un desequilibrio de clases con un ratio de ", round(imbalance_ratio, 2), 
-         " (No Pobres / Pobres)."),
-  "",
-  "## VALORES FALTANTES:",
-  paste0("- Se identificaron ", sum(missing_analysis$pct_missing > 0), " variables con valores faltantes."),
-  paste0("- Variables con alta proporción de valores faltantes (>30%): ", 
-         paste(high_missing_vars, collapse=", ")),
-  "",
-  "## OUTLIERS:",
-  paste0("- Se identificaron ", nrow(variables_outliers), " variables con outliers significativos (>5%)."),
-  paste0("- Variables con mayor porcentaje de outliers: ", 
-         paste(head(variables_outliers$variable, 3), collapse=", ")),
-  "",
-  "## VARIABLES REDUNDANTES:",
-  paste0("- Se identificaron ", nrow(high_corr_pairs), " pares de variables altamente correlacionadas (|r| > 0.7)."),
-  "",
-  "## VARIABLES MÁS CORRELACIONADAS CON POBREZA:",
-  paste0("- ", variables_importantes$variable[1], " (", round(variables_importantes$correlacion_con_pobreza[1], 3), ")"),
-  paste0("- ", variables_importantes$variable[2], " (", round(variables_importantes$correlacion_con_pobreza[2], 3), ")"),
-  paste0("- ", variables_importantes$variable[3], " (", round(variables_importantes$correlacion_con_pobreza[3], 3), ")"),
-  "",
-  "## RECOMENDACIONES PARA LIMPIEZA DE DATOS:",
-  "1. Considerar eliminar variables con más del 30% de valores faltantes.",
-  "2. Imputar valores faltantes en variables importantes usando estrategias adecuadas según el tipo de variable.",
-  "3. Tratar outliers en variables con alto porcentaje de valores extremos, especialmente en variables de ingreso.",
-  "4. Eliminar variables redundantes con alta correlación, manteniendo las más correlacionadas con la variable objetivo.",
-  "5. Considerar transformaciones para variables con distribuciones sesgadas.",
-  "6. Implementar estrategias para manejar el desbalance de clases en la fase de modelamiento.",
-  "",
-  "## VARIABLES CANDIDATAS PARA ONE-HOT ENCODING:",
-  paste0("- Variables categóricas con pocas categorías (<=10): ", 
-         paste(variables_one_hot$variable, collapse=", ")),
-  "",
-  "Este resumen servirá como guía para el procesamiento y limpieza de datos en el siguiente script."
-)
-
-# Guardar hallazgos en un archivo de texto
-writeLines(findings, "views/tables/exploratory_analysis_findings.md")
-
-cat("Resumen de hallazgos guardado en 'views/tables/exploratory_analysis_findings.md'.\n")
 
 ################################################################################
 #                            FINALIZACIÓN DEL SCRIPT                           #
@@ -624,8 +727,9 @@ cat("\n======================================================================\n"
 cat("ANÁLISIS EXPLORATORIO COMPLETADO\n")
 cat("======================================================================\n")
 cat("Resultados guardados en:\n")
-cat("  - views/tables/ (tablas y resúmenes estadísticos)\n")
-cat("\nHallazgos principales guardados en: views/tables/exploratory_analysis_findings.md\n")
+cat("  - views/tables/ (tablas en formato LaTeX)\n")
+cat("  - views/figures/ (gráficos en formato PDF)\n")
+cat("\nHallazgos principales guardados en: views/tables/exploratory_analysis_findings.md y .tex\n")
 cat("\nUtilizar estos resultados para guiar la limpieza de datos y selección de variables\n")
 cat("en el siguiente script (03_data_cleaning.R).\n")
 cat("======================================================================\n")
