@@ -50,6 +50,11 @@ cat("Dimensiones del conjunto de prueba:", dim(test_data), "\n")
 
 cat("Identificando y clasificando variables...\n")
 
+# Mostrar estructura general del dataset
+# Esto permite revisar tipo de variables, niveles de factores y posibles valores faltantes
+cat("Estructura del dataset:\n")
+str(train_data)
+
 # Crear dataframe con clasificación de variables
 variables_info <- data.frame(
   variable = names(train_data),
@@ -58,6 +63,10 @@ variables_info <- data.frame(
   es_id = names(train_data) %in% c("id", "directorio", "secuencia_p", "orden"),
   stringsAsFactors = FALSE
 )
+
+# Ver resumen de tipos de variables (cuántas numeric, character, etc.)
+cat("Resumen de tipos de variables:\n")
+print(table(variables_info$tipo))
 
 # Guardar esta información en formato LaTeX
 print(xtable(variables_info, 
@@ -722,14 +731,3 @@ cat("Resúmenes para toma de decisiones guardados en carpeta views/tables/\n")
 ################################################################################
 #                            FINALIZACIÓN DEL SCRIPT                           #
 ################################################################################
-
-cat("\n======================================================================\n")
-cat("ANÁLISIS EXPLORATORIO COMPLETADO\n")
-cat("======================================================================\n")
-cat("Resultados guardados en:\n")
-cat("  - views/tables/ (tablas en formato LaTeX)\n")
-cat("  - views/figures/ (gráficos en formato PDF)\n")
-cat("\nHallazgos principales guardados en: views/tables/exploratory_analysis_findings.md y .tex\n")
-cat("\nUtilizar estos resultados para guiar la limpieza de datos y selección de variables\n")
-cat("en el siguiente script (03_data_cleaning.R).\n")
-cat("======================================================================\n")
