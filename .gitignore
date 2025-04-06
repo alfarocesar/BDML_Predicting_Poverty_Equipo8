@@ -52,6 +52,7 @@ rsconnect/
 # Data files
 stores/raw/*
 !stores/raw/README.md
+!stores/raw/tipos_datos_personas.csv
 stores/processed/*
 !stores/processed/README.md
 
