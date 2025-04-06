@@ -1,0 +1,139 @@
+﻿variable,tipo,formato,descripcion
+id,discrete,character,Identificador único del hogar
+Directorio,contin,numeric,Llave de vivienda 
+Secuencia_p,discrete,numeric,Llave de hogar 
+Orden,discrete,numeric,Llave de persona 
+Clase,discrete,character,"1. Cabecera, 2. Resto (centros poblados y área rural dispersa) "
+Dominio,discrete,character,"Cada una de las 24 a.M., otras cabeceras y resto "
+Mes,discrete,numeric,Mes 
+Estrato1,discrete,numeric,"Estrato de energía para las 13 a.M., y sextil de icv para otras cabeceras y resto "
+P6020,discrete,numeric,Sexo 
+P6040,contin,numeric,¿cuántos años cumplidos tiene? 
+P6050,discrete,numeric,¿cuál es el parentesco de ...Con el jefe o jefa del hogar? 
+P6090,discrete,numeric,"""¿ ... Está afiliado, es cotizante o es beneficiario de alguna entidad de seguridad social en salud? "
+P6100,discrete,numeric,¿A cual de los siguientes regímenes de seguridad social en salud está afiliado: 
+P6210,discrete,numeric,¿Cuál es el nivel educativo más alto alcanzado por .... y el último año o grado aprobado en este nivel? 
+P6210s1,contin,numeric,Grado escolar aprobado 
+P6240,discrete,numeric,¿En que actividad ocupó...... la mayor parte del tiempo la semana pasada? 
+Oficio,discrete,numeric,¿qué hace… … en este trabajo? 
+P6426,contin,numeric,"¿cuanto tiempo lleva ...Trabajando en esta empresa, negocio, industria, oficina, firma o finca de manera continua? "
+P6430,discrete,numeric,En este trabajo es … . (posición ocupacional primera actividad) 
+P6500,contin,numeric,Antes de descuentos ¿cuánto ganó .... el mes pasado en este empleo? 
+P6510,discrete,numeric,¿el mes pasado recibio ingresos por concepto de horas extras? 
+P6510s1,contin,numeric,¿cuánto recibió por horas extras? 
+P6510s2,discrete,numeric,¿incluyó este valor en los ingresos del mes pasado? 
+P6545,discrete,numeric,"El mes pasado recibió a. Primas (técnica, de antigüedad, clima,orden publico, otras, etc) "
+P6545s1,contin,numeric,¿cuánto recibió por primas? 
+P6545s2,discrete,numeric,¿incluyó este valor en los ingresos del mes pasado ($ ____) que me declaró anteriormente? 
+P6580,discrete,numeric,¿el mes pasado recibió b. Bonificaciones? 
+P6580s1,contin,numeric,¿cuánto recibió por bonificaciones? 
+P6580s2,discrete,numeric,¿incluyó este valor en los ingresos del mes pasado ($ ____) que me declaró anteriormente? 
+P6585s1,discrete,numeric,¿el mes pasado recibió a. Auxilio o subsidio de alimentación? 
+P6585s1a1,contin,numeric,¿cuánto recibió por subsidio de alimentación? 
+P6585s1a2,discrete,numeric,¿incluyó este valor en los ingresos del mes pasado ($ ____) que me declaró anteriormente? 
+P6585s2,discrete,numeric,¿el mes pasado recibió b. Auxilio subsidio de transporte? 
+P6585s2a1,contin,numeric,¿cuánto recibió por subsidio de transporte? 
+P6585s2a2,discrete,numeric,¿incluyó este valor en los ingresos del mes pasado ($ ____) que me declaró anteriormente? 
+P6585s3,discrete,numeric,¿el mes pasado recibió c. Subsidio familiar? 
+P6585s3a1,contin,numeric,¿cuánto recibió por subsidio familiar? 
+P6585s3a2,discrete,numeric,¿incluyó este valor en los ingresos del mes pasado ($ ____) que me declaró anteriormente? 
+P6585s4,discrete,numeric,¿el mes pasado recibio d. Subsidio educativo? 
+P6585s4a1,contin,numeric,¿cuánto recibio por subsidio educativo? 
+P6585s4a2,discrete,numeric,¿incluyó este valor en los ingresos del mes pasado ($ ____) que me declaró anteriormente? 
+P6590,discrete,numeric,"¿además del salario en dinero,¿el mes pasado recibió alimentos como parte de pago por su trabajo? "
+P6590s1,contin,numeric,¿en cuánto estima lo que recibió? $____________ 
+P6600,discrete,numeric,"¿además del salario en dinero,¿el mes pasado recibió vivienda como parte de pago por su trabajo? "
+P6600s1,contin,numeric,¿en cuánto estima lo que recibió? $_______________ 
+P6610,discrete,numeric,¿normalmente... Utiliza transporte de la empresa para desplazarse a su trabajo (bus o automóvil)? 
+P6610s1,contin,numeric,¿en cuánto estima lo que recibió?$_______________ 
+P6620,discrete,numeric,"Además del salario en dinero, ¿el mes pasado... Recibió otros ingresos en especie por su trabajo (electrodomésticos,ropa, productos diferentes aalimentos o bonos tipo sodexho)? "
+P6620s1,contin,numeric,¿en cuánto estima lo que recibió? $_______________ 
+P6630s1,discrete,numeric,En los últimos 12 meses recibió … a. Prima de servicios 
+P6630s1a1,contin,numeric,¿cuánto recibio? $____________ 
+P6630s2,discrete,numeric,En los últimos 12 meses recibió ... B. Prima de navidad 
+P6630s2a1,contin,numeric,¿cuánto recibio? $____________ 
+P6630s3,discrete,numeric,En los últimos 12 meses recibió … c. Prima de vacaciones 
+P6630s3a1,contin,numeric,¿cuánto recibió? $____________ 
+P6630s4,discrete,numeric,En los últimos 12 meses recibio ... D. Viáticos permanentes 
+P6630s4a1,contin,numeric,¿cuánto recibió? $____________ 
+P6630s6,discrete,numeric,En los últimos 12 meses recibio … e. Bonificaciones anuales 
+P6630s6a1,contin,numeric,¿cuánto recibió? $____________ 
+P6750,contin,numeric,"¿cuál fue la ganancia neta o los honorarios netos de ... En esa actividad, negocio, profesión o finca, el mes pasado ? "
+P6760,contin,numeric,¿ a cuántos meses corresponde lo que recibió? 
+P550,contin,numeric,¿cuál fue la ganancia neta del negocio o de la cosecha durante los últimos doce meses? (sólo para centros poblados y área rural dispersa) 
+P6800,contin,numeric,¿cuántas horas a la semana trabaja normalmente.... en ese trabajo ? 
+P6870,discrete,numeric,"¿cuántas personas en total tiene la empresa, negocio, industria, oficina, firma, finca o sitio donde ..... Trabaja? "
+P6920,discrete,numeric,¿está... Cotizando actualmente a un fondo de pensiones? 
+P7040,discrete,numeric,"Además de la ocupación principal, ¿.... tenía la semana pasada otro trabajo o negocio? "
+P7045,contin,numeric,¿cuántas horas trabajó ... La semana pasada en ese segundo trabajo? 
+P7050,discrete,numeric,En ese segundo trabajo… ..es: (ocupación segunda actividad)
+P7070,contin,numeric,¿cuánto recibió o ganó … .. el mes pasado en ese segundo trabajo o negocio? 
+P7090,discrete,numeric,Además de las horas que trabaja actualmente ¿...... quiere trabajar más horas? 
+P7110,discrete,numeric,"Durante las últimas 4 semanas, ¿ ...... hizo diligencias para trabajar más horas? "
+P7120,discrete,numeric,Si la semana pasada le hubiera resultado la posibilidad de trabajar más horas ¿ estaba...... disponible para hacerlo? 
+P7140s1,discrete,numeric,¿Por que motivos ....... desea cambiar de trabajo o empleo: a. Para mejorar la utilización de sus capacidades o formación? 
+P7140s2,discrete,numeric,¿Por que motivos ....... desea cambiar de trabajo o empleo: b. Desea mejorar sus ingresos? 
+P7150,discrete,numeric,"Durante las ÚLTIMAS 4 SEMANAS, ¿...... hizo diligencias para cambiar de trabajo? "
+P7160,discrete,numeric,Si le resultara un nuevo trabajo o empleo a...¿podría empezar a desempeñarlo antes de un mes? 
+P7310,discrete,numeric,¿...... ha buscado trabajo por primera vez o había trabajado antes por lo menos durante dos semanas consecutivas? 
+P7350,discrete,numeric,En este último trabajo era: … (Desocupados) 
+P7422,discrete,numeric,¿Recibió o ganó el mes pasado ingresos por concepto de trabajo?. (Desocupados) 
+P7422s1,contin,numeric,¿Cuánto? $_________________ 
+P7472,discrete,numeric,¿recibió o ganó el mes pasado ingresos por concepto de trabajo?. (desocupados) 
+P7472s1,contin,numeric,¿cuánto? $_________________ 
+P7495,discrete,numeric,"El mes pasado, ¿recibió pagos por concepto de arriendos y/o pensiones? "
+P7500s1,discrete,numeric,"¿El mes pasado, recibió pagos por: a. arriendos de casas, apartamentos, fincas, lotes, vehículos, equipos etc? "
+P7500s1a1,contin,numeric,Valor mes pasado $ __________________ 
+P7500s2,discrete,numeric,"¿El mes pasado recibió pagos por b. pensiones o jubilaciones por vejez,invalidez o sustitución pensional ? "
+P7500s2a1,contin,numeric,Valor mes pasado $ __________________ 
+P7500s3,discrete,numeric,"¿El mes pasado recibió pagos por c. pensión alimenticia por paternidad, divorcio o separación? "
+P7500s3a1,contin,numeric,Valor mes pasado $ __________________ 
+P7505,discrete,numeric,"Durante los últimos doce meses, ¿recibió dinero de otros hogares, personas o instituciones no gubernamentales; dinero por intereses, dividendos, utilidades o por cesantias? "
+P7510s1,discrete,numeric,"Durante los últimos 12 meses, ¿recibió a. dinero de otros hogares o personas residentes en el país? "
+P7510s1a1,contin,numeric,Valor $ ___________ 
+P7510s2,discrete,numeric,"Durante los últimos 12 meses, ¿recibió b. dinero de otros hogares o personas residentes fuera del país? "
+P7510s2a1,contin,numeric,Valor $ ___________ 
+P7510s3,discrete,numeric,"Durante los últimos 12 meses, ¿recibió c. ayudas en dinero de instituciones del país? "
+P7510s3a1,contin,numeric,Valor $ ___________ 
+P7510s5,discrete,numeric,"Durante los últimos 12 meses, ¿recibió d. dinero por intereses de prestamos o CDT´s, depositos de ahorros, utilidades, ganancias o dividendos por inversiones? "
+P7510s5a1,contin,numeric,Valor $ ___________ 
+P7510s6,discrete,numeric,"Durante los últimos 12 meses, ¿recibió e. dinero por concepto de cesantías y/o intereses a las cesantías? "
+P7510s6a1,contin,numeric,Valor $ ___________ 
+P7510s7,discrete,numeric,"Durante los últimos 12 meses, ¿recibió f. dinero de otras fuentes diferentes a las anteriores? "
+P7510s7a1,contin,numeric,Valor $ ___________ 
+Pet,discrete,numeric,Población en edad de trabajar 1: sí 0: no 
+Oc,discrete,numeric,Ocupado 1: sí 
+Des,discrete,numeric,Desocupado 1: sí 
+Ina,discrete,numeric,Inactivo 1: sí 
+Impa,contin,numeric,Ingreso monetario de la primera actividad antes de imputación 
+Isa,contin,numeric,Ingreso monetario de la segunda actividad antes de imputación 
+Ie,contin,numeric,Ingreso en especie antes de imputación 
+Imdi,contin,numeric,Ingreso por trabajo de desocupados e inactivos antes de imputación 
+Iof1,contin,numeric,Ingreso por intereses y dividendos antes de imputación 
+Iof2,contin,numeric,Ingreso por jubilaciones y pensiones antes de imputación 
+Iof3h,contin,numeric,"Ingreso por ayudas de hogares, antes de imputación "
+Iof3i,contin,numeric,"Ingreso por ayudas de instituciones, antes de imputación "
+Iof6,contin,numeric,Ingreso por arriendos antes de imputación 
+Cclasnr2,discrete,numeric,Estado de impa 1:faltante 0: observado 
+Cclasnr3,discrete,numeric,Estado de isa 1:faltante 0: observado 
+Cclasnr4,discrete,numeric,Estado de ie 1:faltante 0: observado 
+Cclasnr5,discrete,numeric,Estado de imdi 1:faltante 0: observado 
+Cclasnr6,discrete,numeric,Estado de iof1 1:faltante 0: observado 
+Cclasnr7,discrete,numeric,Estado de iof2 1:faltante 0: observado 
+Cclasnr8,discrete,numeric,Estado de iof3 1:faltante 0: observado 
+Cclasnr11,discrete,numeric,Estado de iof6 1:faltante 0: observado 
+Impaes,contin,numeric,"Ingreso monetario de la primera actividad imputado (sólo para faltantes, extremos o ceros inconsistentes) "
+Isaes,contin,numeric,Ingreso monetario de la segunda actividad imputado (sólo para faltantes o extremos) 
+Iees,contin,numeric,Ingreso en especie imputado (sólo para faltantes o extremos) 
+Imdies,contin,numeric,Ingreso por trabajo de desocupados e inactivos imputado (sólo para faltantes o extremos) 
+Iof1es,contin,numeric,Ingreso por intereses y dividendos imputado (sólo para faltantes o extremos) 
+Iof2es,contin,numeric,Ingreso por jubilaciones y pensiones imputado (sólo para faltantes o extremos) 
+Iof3hes,contin,numeric,"Ingreso por ayudas de hogares, imputado (sólo para faltantes o extremos) "
+Iof3ies,contin,numeric,"Ingreso por ayudas de instituciones, imputado (sólo para faltantes o extremos) "
+Iof6es,contin,numeric,Ingreso por arriendos imputado (sólo para faltantes o extremos) 
+Ingtotob,contin,numeric,Ingreso total observado 
+Ingtotes,contin,numeric,Ingreso total imputado 
+Ingtot,contin,numeric,Ingreso total 
+Fex_c,contin,numeric,Factor de expansión anualizado 
+Depto,discrete,character,Departamento 
+Fex_dpto,discrete,numeric,Factor Expansión departamental 
