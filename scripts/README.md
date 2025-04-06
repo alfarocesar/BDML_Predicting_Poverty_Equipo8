@@ -23,6 +23,7 @@ Para ejecutar estos scripts, instala las dependencias con:
 ```r
 install.packages("pacman")
 pacman::p_load(tidyverse, caret, glmnet, Metrics)
+```
 
 ## Script 00_preprocessing.R
 
