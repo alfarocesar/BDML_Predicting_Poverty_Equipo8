@@ -45,7 +45,7 @@ cat("Dimensiones de train_personas:", dim(train_personas), "\n")
 cat("Dimensiones de test_hogares:", dim(test_hogares), "\n")
 cat("Dimensiones de test_personas:", dim(test_personas), "\n")
 
-# Exploración inicial - Estructura y columnas
+# Exploración inicial - Base de entranamiento
 cat("\nEstructura de train_hogares:\n")
 str(train_hogares)
 cat("\nColumnas de train_hogares:\n")
@@ -55,6 +55,17 @@ cat("\nEstructura de train_personas:\n")
 str(train_personas)
 cat("\nColumnas de train_personas:\n")
 print(colnames(train_personas))
+
+# Exploración inicial - Base de pruebas
+cat("\nEstructura de test_hogares:\n")
+str(test_hogares)
+cat("\nColumnas de test_hogares:\n")
+print(colnames(test_hogares))
+
+cat("\nEstructura de test_personas:\n")
+str(test_personas)
+cat("\nColumnas de test_personas:\n")
+print(colnames(test_personas))
 
 ###########################################
 # 2. IDENTIFICACIÓN DE VARIABLES COMUNES #
@@ -142,7 +153,7 @@ train_hogares %>%
 ###########################################
 
 # Lista manual de variables a excluir del análisis
-vars_excluir <- c("Fex_dpto") # Puedes añadir más variables separadas por comas
+vars_excluir <- c("Fex_dpto") # Añadir más variables separadas por comas
 
 # Identificar variables discretas numéricas según el diccionario
 vars_discretas_num <- tipos_datos_personas %>%
@@ -283,13 +294,13 @@ descriptiva_personas <- variables_personas %>%
 write.csv(descriptiva_personas, "views/tables/descriptiva_personas_todas.csv", row.names = FALSE)
 
 ###########################################
-# 6.2 Análisis solo para personas con Pet = 1
+# 6.2 Análisis solo para personas con Pet = 1 y ocupadas
 ###########################################
 
-cat("Analizando solo personas con Pet = 1 (en edad de trabajar)...\n")
+cat("Analizando solo personas con Pet = 1 (en edad de trabajar) y ocupadas...\n")
 
-# Filtrar personas en edad de trabajar
-personas_pet <- train_personas %>% filter(Pet == 1)
+# Filtrar personas en edad de trabajar y ocupadas
+personas_pet <- train_personas %>% filter(Pet == 1, Oc == 1)
 
 # Crear tablas para cada tipo de variable
 variables_personas_pet <- data.frame(
@@ -359,23 +370,26 @@ for(var in names(personas_pet)) {
   }
 }
 
-# Unir resultados para personas con Pet = 1
+# Unir resultados para personas con Pet = 1 y Oc = 1
 descriptiva_personas_pet <- variables_personas_pet %>%
   left_join(variables_num_personas_pet, by = "variable") %>%
   left_join(variables_cat_personas_pet, by = "variable")
 
-# Guardar tabla descriptiva de personas (solo Pet = 1)
+# Guardar tabla descriptiva de personas (solo Pet = 1 y Oc =1)
 write.csv(descriptiva_personas_pet, "views/tables/descriptiva_personas_pet.csv", row.names = FALSE)
 
 ###########################################
-# 6.3 Análisis solo para personas mayores de 18 años 
+# 6.3 Análisis solo para personas entre 18 y 65 años y ocupadas
 ###########################################
 
-cat("Analizando solo personas mayores de 18 años...\n")
+cat("Analizando solo personas entre 18 y 65 años y ocupadas...\n")
 
-# Crear variable flag para identificar personas mayores de 18 años
+# Crear variable flag para identificar personas entre 18 y 65 años
 train_personas <- train_personas %>%
-  mutate(mayor_18 = ifelse(P6040 >= 18, 1, 0))
+  mutate(mayor_18 = ifelse(P6040 >= 18 & P6040 <= 65, 1, 0))
+
+# Filtrar personas entre 18 y 65 años y ocupadas
+personas_adultas <- train_personas %>% filter(mayor_18 == 1, Oc == 1)
 
 # Filtrar personas mayores de 18 años
 personas_adultas <- train_personas %>% filter(mayor_18 == 1)
