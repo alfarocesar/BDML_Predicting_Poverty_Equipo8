@@ -1,5 +1,5 @@
 ################################################################################
-# TÍTULO: 00_preprocessing.R                                                   #
+# TÍTULO: 00_preprocessing_modificado.R                                        #
 # PROYECTO: Predicción de Pobreza en Colombia                                 #
 # DESCRIPCIÓN: Análisis independiente de las bases de datos de hogares y      #
 #              personas antes de su unión.                                     #
@@ -152,6 +152,14 @@ train_hogares %>%
 # 4. ANÁLISIS DE VARIABLES DISCRETAS     #
 ###########################################
 
+# Añadir la variable Pobre de hogares a la base de personas
+# Primero seleccionamos solo id y Pobre de la base de hogares
+hogares_pobre <- train_hogares %>% select(id, Pobre)
+
+# Luego unimos con la base de personas
+train_personas_con_pobre <- train_personas %>%
+  left_join(hogares_pobre, by = "id")
+
 # Lista manual de variables a excluir del análisis
 vars_excluir <- c("Fex_dpto") # Añadir más variables separadas por comas
 
@@ -166,28 +174,56 @@ vars_discretas_num <- vars_discretas_num[!vars_discretas_num %in% vars_excluir]
 cat("\nAnalizando distribución de variables discretas numéricas...\n")
 cat("Variables excluidas manualmente:", paste(vars_excluir, collapse = ", "), "\n")
 
-# Crear un dataframe para almacenar resultados
+# Crear un dataframe para almacenar resultados con información sobre pobreza
 distribucion_discretas <- data.frame()
 
-# Analizar la distribución de cada variable discreta numérica
+# Analizar la distribución de cada variable discreta numérica e incluir conteo de pobres
 for(var in vars_discretas_num) {
-  if(var %in% names(train_personas)) {
-    # Obtener tabla de frecuencia incluyendo NAs
-    tabla <- table(train_personas[[var]], useNA = "always")
+  if(var %in% names(train_personas_con_pobre)) {
+    # Crear tabla de contingencia
+    tabla_contingencia <- table(train_personas_con_pobre[[var]], train_personas_con_pobre$Pobre, useNA = "always")
     
-    # Convertir a data frame
-    df_tabla <- as.data.frame(tabla)
-    names(df_tabla) <- c("Valor", "Frecuencia")
+    # Convertir a data frame para mejor manipulación
+    df_tabla <- as.data.frame(tabla_contingencia)
+    names(df_tabla) <- c("Valor", "Pobre", "Frecuencia")
     
-    # Agregar nombre de variable
+    # Añadir nombre de variable
     df_tabla$Variable <- var
     
+    # Calcular frecuencia total por valor (incluyendo NA en Pobre para mantener el conteo total)
+    totales_por_valor <- df_tabla %>%
+      group_by(Variable, Valor) %>%
+      summarize(Frecuencia_Total = sum(Frecuencia), .groups = 'drop')
+    
+    # Calcular totales por valor sin NAs en Pobre (para calcular porcentajes)
+    totales_validos <- df_tabla %>%
+      filter(!is.na(Pobre)) %>%
+      group_by(Variable, Valor) %>%
+      summarize(Total_Validos = sum(Frecuencia), .groups = 'drop')
+    
+    # Reorganizar para tener columnas para total, pobres y no pobres
+    df_final <- df_tabla %>%
+      filter(!is.na(Pobre)) %>%
+      pivot_wider(
+        id_cols = c(Variable, Valor),
+        names_from = Pobre,
+        values_from = Frecuencia,
+        names_prefix = "Pobre_"
+      ) %>%
+      left_join(totales_validos, by = c("Variable", "Valor")) %>%
+      left_join(totales_por_valor, by = c("Variable", "Valor")) %>%
+      mutate(
+        Pobre_0 = ifelse(is.na(Pobre_0), 0, Pobre_0),
+        Pobre_1 = ifelse(is.na(Pobre_1), 0, Pobre_1),
+        Porcentaje_Pobres = Pobre_1 / Total_Validos * 100
+      )
+    
     # Agregar al dataframe de resultados
-    distribucion_discretas <- rbind(distribucion_discretas, df_tabla)
+    distribucion_discretas <- rbind(distribucion_discretas, df_final)
   }
 }
 
-# Guardar distribución de variables discretas
+# Guardar distribución de variables discretas con conteo de pobreza
 write.csv(distribucion_discretas, "views/tables/distribucion_vars_discretas.csv", row.names = FALSE)
 
 ###########################################
@@ -294,35 +330,122 @@ descriptiva_personas <- variables_personas %>%
 write.csv(descriptiva_personas, "views/tables/descriptiva_personas_todas.csv", row.names = FALSE)
 
 ###########################################
-# 6.2 Análisis solo para personas con Pet = 1 y ocupadas
+# 6.2 Análisis para personas entre 18 y 65 años y ocupadas
 ###########################################
 
-cat("Analizando solo personas con Pet = 1 (en edad de trabajar) y ocupadas...\n")
+cat("Analizando personas entre 18 y 65 años y ocupadas...\n")
 
-# Filtrar personas en edad de trabajar y ocupadas
-personas_pet <- train_personas %>% filter(Pet == 1, Oc == 1)
+# Filtrar personas entre 18 y 65 años y ocupadas
+personas_18_65_ocupadas <- train_personas %>% 
+  filter(P6040 >= 18, P6040 <= 65, Oc == 1)
+
+# Crear tablas para cada tipo de variable
+variables_personas_filtro <- data.frame(
+  variable = names(personas_18_65_ocupadas),
+  tipo = sapply(personas_18_65_ocupadas, class),
+  n_valores_unicos = sapply(personas_18_65_ocupadas, function(x) length(unique(na.omit(x)))),
+  n_missing = sapply(personas_18_65_ocupadas, function(x) sum(is.na(x))),
+  pct_missing = sapply(personas_18_65_ocupadas, function(x) sum(is.na(x))/length(x)),
+  stringsAsFactors = FALSE
+)
+
+# Estadísticas para variables numéricas
+variables_num_personas_filtro <- data.frame()
+for(var in names(personas_18_65_ocupadas)) {
+  if(is.numeric(personas_18_65_ocupadas[[var]])) {
+    if(!all(is.na(personas_18_65_ocupadas[[var]]))) {
+      # Estadísticas básicas
+      min_val <- min(personas_18_65_ocupadas[[var]], na.rm = TRUE)
+      max_val <- max(personas_18_65_ocupadas[[var]], na.rm = TRUE)
+      mean_val <- mean(personas_18_65_ocupadas[[var]], na.rm = TRUE)
+      median_val <- median(personas_18_65_ocupadas[[var]], na.rm = TRUE)
+      sd_val <- sd(personas_18_65_ocupadas[[var]], na.rm = TRUE)
+      
+      # Agregar a la tabla
+      variables_num_personas_filtro <- rbind(variables_num_personas_filtro, data.frame(
+        variable = var,
+        min = min_val,
+        max = max_val,
+        media = mean_val,
+        mediana = median_val,
+        desv_est = sd_val,
+        stringsAsFactors = FALSE
+      ))
+    }
+  }
+}
+
+# Estadísticas para variables categóricas
+variables_cat_personas_filtro <- data.frame()
+for(var in names(personas_18_65_ocupadas)) {
+  x <- personas_18_65_ocupadas[[var]]
+  es_categorica <- is.character(x) || is.factor(x) || (is.numeric(x) && length(unique(na.omit(x))) <= 15)
+  
+  if (es_categorica) {
+    var_data <- na.omit(x) # eliminar NAs
+    
+    # Crear tabla de frecuencias
+    freq_table <- table(var_data)
+    
+    if (length(freq_table) > 0) {
+      max_freq <- max(freq_table)
+      max_cat <- names(freq_table)[which.max(freq_table)]
+      total_validos <- sum(freq_table) # mismo que length(var_data)
+      
+      # Crear data frame con resultados
+      resultados <- data.frame(
+        variable = var,
+        n_categorias = length(freq_table),
+        valor_mas_frecuente = max_cat,
+        frec_valor_mas_frecuente = max_freq,
+        prop_valor_mas_frecuente = max_freq / total_validos,
+        stringsAsFactors = FALSE
+      )
+      
+      variables_cat_personas_filtro <- rbind(variables_cat_personas_filtro, resultados)
+    }
+  }
+}
+
+# Unir resultados para personas con filtro
+descriptiva_personas_filtro <- variables_personas_filtro %>%
+  left_join(variables_num_personas_filtro, by = "variable") %>%
+  left_join(variables_cat_personas_filtro, by = "variable")
+
+# Guardar tabla descriptiva de personas (con filtro)
+write.csv(descriptiva_personas_filtro, "views/tables/descriptiva_personas_18_65_ocupadas.csv", row.names = FALSE)
+
+###########################################
+# 6.3 Análisis para personas en edad de trabajar (Pet = 1), <= 65 años y ocupadas
+###########################################
+
+cat("Analizando personas en edad de trabajar (Pet = 1), <= 65 años y ocupadas...\n")
+
+# Filtrar personas en edad de trabajar, menores o iguales a 65 años y ocupadas
+personas_pet_65_ocupadas <- train_personas %>% 
+  filter(Pet == 1, P6040 <= 65, Oc == 1)
 
 # Crear tablas para cada tipo de variable
 variables_personas_pet <- data.frame(
-  variable = names(personas_pet),
-  tipo = sapply(personas_pet, class),
-  n_valores_unicos = sapply(personas_pet, function(x) length(unique(na.omit(x)))),
-  n_missing = sapply(personas_pet, function(x) sum(is.na(x))),
-  pct_missing = sapply(personas_pet, function(x) sum(is.na(x))/length(x)),
+  variable = names(personas_pet_65_ocupadas),
+  tipo = sapply(personas_pet_65_ocupadas, class),
+  n_valores_unicos = sapply(personas_pet_65_ocupadas, function(x) length(unique(na.omit(x)))),
+  n_missing = sapply(personas_pet_65_ocupadas, function(x) sum(is.na(x))),
+  pct_missing = sapply(personas_pet_65_ocupadas, function(x) sum(is.na(x))/length(x)),
   stringsAsFactors = FALSE
 )
 
 # Estadísticas para variables numéricas
 variables_num_personas_pet <- data.frame()
-for(var in names(personas_pet)) {
-  if(is.numeric(personas_pet[[var]])) {
-    if(!all(is.na(personas_pet[[var]]))) {
+for(var in names(personas_pet_65_ocupadas)) {
+  if(is.numeric(personas_pet_65_ocupadas[[var]])) {
+    if(!all(is.na(personas_pet_65_ocupadas[[var]]))) {
       # Estadísticas básicas
-      min_val <- min(personas_pet[[var]], na.rm = TRUE)
-      max_val <- max(personas_pet[[var]], na.rm = TRUE)
-      mean_val <- mean(personas_pet[[var]], na.rm = TRUE)
-      median_val <- median(personas_pet[[var]], na.rm = TRUE)
-      sd_val <- sd(personas_pet[[var]], na.rm = TRUE)
+      min_val <- min(personas_pet_65_ocupadas[[var]], na.rm = TRUE)
+      max_val <- max(personas_pet_65_ocupadas[[var]], na.rm = TRUE)
+      mean_val <- mean(personas_pet_65_ocupadas[[var]], na.rm = TRUE)
+      median_val <- median(personas_pet_65_ocupadas[[var]], na.rm = TRUE)
+      sd_val <- sd(personas_pet_65_ocupadas[[var]], na.rm = TRUE)
       
       # Agregar a la tabla
       variables_num_personas_pet <- rbind(variables_num_personas_pet, data.frame(
@@ -340,8 +463,8 @@ for(var in names(personas_pet)) {
 
 # Estadísticas para variables categóricas
 variables_cat_personas_pet <- data.frame()
-for(var in names(personas_pet)) {
-  x <- personas_pet[[var]]
+for(var in names(personas_pet_65_ocupadas)) {
+  x <- personas_pet_65_ocupadas[[var]]
   es_categorica <- is.character(x) || is.factor(x) || (is.numeric(x) && length(unique(na.omit(x))) <= 15)
   
   if (es_categorica) {
@@ -370,103 +493,13 @@ for(var in names(personas_pet)) {
   }
 }
 
-# Unir resultados para personas con Pet = 1 y Oc = 1
+# Unir resultados para personas Pet = 1, <= 65 años y ocupadas
 descriptiva_personas_pet <- variables_personas_pet %>%
   left_join(variables_num_personas_pet, by = "variable") %>%
   left_join(variables_cat_personas_pet, by = "variable")
 
-# Guardar tabla descriptiva de personas (solo Pet = 1 y Oc =1)
-write.csv(descriptiva_personas_pet, "views/tables/descriptiva_personas_pet.csv", row.names = FALSE)
-
-###########################################
-# 6.2 Análisis solo para personas con edad <= 65, Pet = 1 y ocupadas
-###########################################
-
-cat("Analizando solo personas con edad menor o igual a 65 años, en edad de trabajar (Pet = 1) y ocupadas (Oc = 1)...\n")
-
-# Crear variable flag para identificar personas con edad menor o igual a 65 años
-train_personas <- train_personas %>%
-  mutate(menor_igual_65 = ifelse(P6040 <= 65, 1, 0))
-
-# Filtrar personas con edad <= 65, en edad de trabajar y ocupadas
-personas_adultas <- train_personas %>%
-  filter(menor_igual_65 == 1, Pet == 1, Oc == 1)
-
-# Crear tablas para cada tipo de variable
-variables_personas_adultas <- data.frame(
-  variable = names(personas_adultas),
-  tipo = sapply(personas_adultas, class),
-  n_valores_unicos = sapply(personas_adultas, function(x) length(unique(na.omit(x)))),
-  n_missing = sapply(personas_adultas, function(x) sum(is.na(x))),
-  pct_missing = sapply(personas_adultas, function(x) sum(is.na(x))/length(x)),
-  stringsAsFactors = FALSE
-)
-
-# Estadísticas para variables numéricas
-variables_num_personas_adultas <- data.frame()
-for(var in names(personas_adultas)) {
-  if(is.numeric(personas_adultas[[var]])) {
-    if(!all(is.na(personas_adultas[[var]]))) {
-      # Estadísticas básicas
-      min_val <- min(personas_adultas[[var]], na.rm = TRUE)
-      max_val <- max(personas_adultas[[var]], na.rm = TRUE)
-      mean_val <- mean(personas_adultas[[var]], na.rm = TRUE)
-      median_val <- median(personas_adultas[[var]], na.rm = TRUE)
-      sd_val <- sd(personas_adultas[[var]], na.rm = TRUE)
-      
-      # Agregar a la tabla
-      variables_num_personas_adultas <- rbind(variables_num_personas_adultas, data.frame(
-        variable = var,
-        min = min_val,
-        max = max_val,
-        media = mean_val,
-        mediana = median_val,
-        desv_est = sd_val,
-        stringsAsFactors = FALSE
-      ))
-    }
-  }
-}
-
-# Estadísticas para variables categóricas
-variables_cat_personas_adultas <- data.frame()
-for(var in names(personas_adultas)) {
-  x <- personas_adultas[[var]]
-  es_categorica <- is.character(x) || is.factor(x) || (is.numeric(x) && length(unique(na.omit(x))) <= 15)
-  
-  if (es_categorica) {
-    var_data <- na.omit(x) # eliminar NAs
-    
-    # Crear tabla de frecuencias
-    freq_table <- table(var_data)
-    
-    if (length(freq_table) > 0) {
-      max_freq <- max(freq_table)
-      max_cat <- names(freq_table)[which.max(freq_table)]
-      total_validos <- sum(freq_table) # mismo que length(var_data)
-      
-      # Crear data frame con resultados
-      resultados <- data.frame(
-        variable = var,
-        n_categorias = length(freq_table),
-        valor_mas_frecuente = max_cat,
-        frec_valor_mas_frecuente = max_freq,
-        prop_valor_mas_frecuente = max_freq / total_validos,
-        stringsAsFactors = FALSE
-      )
-      
-      variables_cat_personas_adultas <- rbind(variables_cat_personas_adultas, resultados)
-    }
-  }
-}
-
-# Unir resultados para personas adultas
-descriptiva_personas_adultas <- variables_personas_adultas %>%
-  left_join(variables_num_personas_adultas, by = "variable") %>%
-  left_join(variables_cat_personas_adultas, by = "variable")
-
-# Guardar tabla descriptiva de personas (solo adultos)
-write.csv(descriptiva_personas_adultas, "views/tables/descriptiva_personas_adultas.csv", row.names = FALSE)
+# Guardar tabla descriptiva de personas (Pet = 1, <= 65 años, ocupadas)
+write.csv(descriptiva_personas_pet, "views/tables/descriptiva_personas_pet_65_ocupadas.csv", row.names = FALSE)
 
 ###########################################
 # 7. COMPARACIÓN DE MISSING VALUES       #
@@ -474,36 +507,139 @@ write.csv(descriptiva_personas_adultas, "views/tables/descriptiva_personas_adult
 
 # Comparar missing values entre las diferentes poblaciones analizadas
 variables_comunes <- intersect(
-  intersect(names(train_personas), names(personas_pet)),
-  names(personas_adultas)
+  intersect(names(train_personas), names(personas_18_65_ocupadas)), 
+  names(personas_pet_65_ocupadas)
 )
 
 missing_comparacion <- data.frame(
   variable = variables_comunes,
   missing_todas = sapply(train_personas[variables_comunes], function(x) sum(is.na(x))),
   pct_missing_todas = sapply(train_personas[variables_comunes], function(x) sum(is.na(x))/nrow(train_personas)),
-  missing_pet = sapply(personas_pet[variables_comunes], function(x) sum(is.na(x))),
-  pct_missing_pet = sapply(personas_pet[variables_comunes], function(x) sum(is.na(x))/nrow(personas_pet)),
-  missing_adultos = sapply(personas_adultas[variables_comunes], function(x) sum(is.na(x))),
-  pct_missing_adultos = sapply(personas_adultas[variables_comunes], function(x) sum(is.na(x))/nrow(personas_adultas))
+  missing_18_65_ocupadas = sapply(personas_18_65_ocupadas[variables_comunes], function(x) sum(is.na(x))),
+  pct_missing_18_65_ocupadas = sapply(personas_18_65_ocupadas[variables_comunes], function(x) sum(is.na(x))/nrow(personas_18_65_ocupadas)),
+  missing_pet_65_ocupadas = sapply(personas_pet_65_ocupadas[variables_comunes], function(x) sum(is.na(x))),
+  pct_missing_pet_65_ocupadas = sapply(personas_pet_65_ocupadas[variables_comunes], function(x) sum(is.na(x))/nrow(personas_pet_65_ocupadas))
 )
 
 # Calcular diferencias en proporción de missing values
 missing_comparacion <- missing_comparacion %>%
   mutate(
-    diff_pct_pet_todas = pct_missing_pet - pct_missing_todas,
-    diff_pct_adultos_todas = pct_missing_adultos - pct_missing_todas,
-    diff_pct_adultos_pet = pct_missing_adultos - pct_missing_pet
+    diff_pct_18_65_todas = pct_missing_18_65_ocupadas - pct_missing_todas,
+    diff_pct_pet_65_todas = pct_missing_pet_65_ocupadas - pct_missing_todas,
+    diff_pct_pet_65_18_65 = pct_missing_pet_65_ocupadas - pct_missing_18_65_ocupadas
   )
 
 # Ordenar por mayor diferencia
 missing_comparacion <- missing_comparacion %>%
-  arrange(desc(abs(diff_pct_pet_todas)))
+  arrange(desc(abs(diff_pct_18_65_todas)))
 
 # Guardar comparación de missing values
 write.csv(missing_comparacion, "views/tables/missing_comparacion_personas.csv", row.names = FALSE)
 
-cat("\n¡Análisis descriptivo completado! Todas las tablas han sido guardadas en views/tables/\n")
+###########################################
+# 8. ANÁLISIS CHI-CUADRADO               #
+###########################################
+
+cat("\nEvaluando capacidad predictiva de variables discretas mediante Chi-cuadrado...\n")
+
+# Crear dataframe para almacenar resultados de chi-cuadrado con dos niveles de confianza
+chi_cuadrado_resultados <- data.frame(
+  Variable = character(),
+  Chi_Cuadrado = numeric(),
+  Grados_Libertad = numeric(),
+  Valor_P = numeric(),
+  Significativo_90 = logical(),  # Para nivel de confianza de 0.9
+  Significativo_75 = logical(),  # Para nivel de confianza de 0.75
+  V_Cramer = numeric(),
+  Cumple_Supuestos = logical(),
+  stringsAsFactors = FALSE
+)
+
+# Variables con advertencias por supuestos no cumplidos
+variables_con_advertencias <- c()
+
+# Analizar cada variable discreta
+for(var in vars_discretas_num) {
+  if(var %in% names(train_personas_con_pobre)) {
+    # Crear tabla de contingencia excluyendo NAs
+    datos_filtrados <- train_personas_con_pobre %>% 
+      filter(!is.na(!!sym(var)) & !is.na(Pobre))
+    
+    tabla <- table(datos_filtrados[[var]], datos_filtrados$Pobre)
+    
+    # Verificar que la tabla tiene suficientes datos
+    if(sum(tabla) > 0 && min(dim(tabla)) > 1) {
+      # Verificar supuestos: frecuencias esperadas >= 5
+      chi_esperado <- suppressWarnings(chisq.test(tabla)$expected)
+      cumple_supuestos <- all(chi_esperado >= 5)
+      
+      # Si no cumple supuestos, guardar la variable
+      if(!cumple_supuestos) {
+        variables_con_advertencias <- c(variables_con_advertencias, var)
+      }
+      
+      # Aplicar prueba Chi-cuadrado (suprimiendo warnings)
+      resultado_chi <- suppressWarnings(chisq.test(tabla))
+      
+      # Calcular V de Cramér
+      v_cramer <- sqrt(resultado_chi$statistic / (sum(tabla) * (min(dim(tabla)) - 1)))
+      
+      # Determinar si es significativo con nivel de confianza de 0.9 y 0.75
+      significativo_90 <- resultado_chi$p.value < 0.1  # alpha = 0.1 para confianza de 0.9
+      significativo_75 <- resultado_chi$p.value < 0.25 # alpha = 0.25 para confianza de 0.75
+      
+      # Guardar resultados
+      chi_cuadrado_resultados <- rbind(chi_cuadrado_resultados, data.frame(
+        Variable = var,
+        Chi_Cuadrado = as.numeric(resultado_chi$statistic),
+        Grados_Libertad = resultado_chi$parameter,
+        Valor_P = resultado_chi$p.value,
+        Significativo_90 = significativo_90,
+        Significativo_75 = significativo_75,
+        V_Cramer = as.numeric(v_cramer),
+        Cumple_Supuestos = cumple_supuestos,
+        stringsAsFactors = FALSE
+      ))
+    } else {
+      # No hay suficientes datos o categorías para el análisis
+      chi_cuadrado_resultados <- rbind(chi_cuadrado_resultados, data.frame(
+        Variable = var,
+        Chi_Cuadrado = NA,
+        Grados_Libertad = NA,
+        Valor_P = NA,
+        Significativo_90 = NA,
+        Significativo_75 = NA,
+        V_Cramer = NA,
+        Cumple_Supuestos = FALSE,
+        stringsAsFactors = FALSE
+      ))
+    }
+  }
+}
+
+# Ordenar resultados por V de Cramér (de mayor a menor)
+chi_cuadrado_resultados <- chi_cuadrado_resultados %>%
+  arrange(desc(V_Cramer))
+
+# Mostrar las 10 variables con mayor poder predictivo
+cat("\nTop 10 variables discretas como predictores de pobreza (según V de Cramér):\n")
+print(head(chi_cuadrado_resultados, 10))
+
+# Mostrar resumen de verificación de supuestos
+cat("\nResumen de verificación de supuestos del test chi-cuadrado:\n")
+cat("Total de variables analizadas:", nrow(chi_cuadrado_resultados), "\n")
+cat("Variables que cumplen supuestos:", sum(chi_cuadrado_resultados$Cumple_Supuestos, na.rm = TRUE), "\n")
+cat("Variables que NO cumplen supuestos:", sum(!chi_cuadrado_resultados$Cumple_Supuestos, na.rm = TRUE), "\n")
+cat("Variables con advertencias:", length(variables_con_advertencias), "\n")
+
+if(length(variables_con_advertencias) > 0) {
+  cat("\nNota: Las siguientes variables no cumplen el supuesto de frecuencias esperadas >= 5.\n")
+  cat("Para estas variables, los resultados del test chi-cuadrado deben interpretarse con precaución:\n")
+  cat(paste(variables_con_advertencias, collapse = ", "), "\n")
+}
+
+# Guardar resultados completos
+write.csv(chi_cuadrado_resultados, "views/tables/chi_cuadrado_predictores.csv", row.names = FALSE)
 
 ################################################################################
 #                            FINALIZACIÓN DEL SCRIPT                           #
