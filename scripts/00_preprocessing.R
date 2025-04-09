@@ -537,7 +537,82 @@ missing_comparacion <- missing_comparacion %>%
 write.csv(missing_comparacion, "views/tables/missing_comparacion_personas.csv", row.names = FALSE)
 
 ###########################################
-# 8. ANÁLISIS CHI-CUADRADO               #
+# 8. AGRUPACIÓN DE CATEGORÍAS DE OFICIO  #
+###########################################
+
+# la variable oficio de la base train_personas es la que más clases tiene, para reducir la
+# complejidad vamos a agrupara las clases en tres grupos en función de la frecuencia de pobres en cada una de ellas
+
+cat("\nAgrupando categorías de la variable Oficio según su relación con pobreza...\n")
+
+# Filtrar solo personas en edad de trabajar y ocupadas
+personas_pet_oc <- train_personas_con_pobre %>% 
+  filter(Pet == 1, Oc == 1)
+
+# Calcular la proporción de pobres por cada categoría de Oficio
+proporcion_pobres_oficio <- personas_pet_oc %>%
+  # Eliminamos valores NA en Oficio
+  filter(!is.na(Oficio)) %>%
+  # Agrupamos por Oficio
+  group_by(Oficio) %>%
+  # Calculamos el número de personas y la proporción de pobres
+  summarize(
+    Total = n(),
+    Pobres = sum(Pobre == 1, na.rm = TRUE),
+    Prop_Pobres = Pobres / Total,
+    .groups = "drop"
+  )
+
+# Imprimir información sobre la agrupación
+cat("Número de categorías de Oficio después de filtrar NA:", nrow(proporcion_pobres_oficio), "\n")
+cat("Rango de proporción de pobres:", min(proporcion_pobres_oficio$Prop_Pobres), "a", 
+    max(proporcion_pobres_oficio$Prop_Pobres), "\n")
+
+# Preparar datos para k-means
+datos_kmeans <- proporcion_pobres_oficio$Prop_Pobres
+
+# Aplicamos k-means con k=3
+set.seed(123) # Para reproducibilidad
+kmeans_resultado <- kmeans(datos_kmeans, centers = 3)
+
+# Añadimos el grupo asignado por k-means a los datos
+proporcion_pobres_oficio$Grupo <- kmeans_resultado$cluster
+
+# Mostramos resumen de los grupos
+resumen_grupos <- proporcion_pobres_oficio %>%
+  group_by(Grupo) %>%
+  summarize(
+    Num_Categorias = n(),
+    Prop_Pobres_Min = min(Prop_Pobres),
+    Prop_Pobres_Media = mean(Prop_Pobres),
+    Prop_Pobres_Max = max(Prop_Pobres),
+    Total_Personas = sum(Total)
+  )
+
+# Imprimir resultados
+cat("\nResumen de grupos por tasa de pobreza:\n")
+print(resumen_grupos)
+
+# Mostrar lista de categorías en cada grupo
+cat("\nCategorías de Oficio por grupo:\n")
+for(g in 1:3) {
+  categorias_grupo <- proporcion_pobres_oficio %>%
+    filter(Grupo == g) %>%
+    arrange(desc(Total)) %>%
+    select(Oficio, Total, Prop_Pobres)
+  
+  cat("\nGRUPO", g, "- Tasa media de pobreza:", 
+      round(resumen_grupos$Prop_Pobres_Media[resumen_grupos$Grupo == g] * 100, 1), "%\n")
+  print(categorias_grupo)
+}
+
+# Guardar el resultado de la agrupación
+write.csv(proporcion_pobres_oficio, "views/tables/oficios_agrupados.csv", row.names = FALSE)
+
+cat("\nAgrupación de categorías de Oficio completada. Los resultados se guardaron en 'views/tables/oficios_agrupados.csv'\n")
+
+###########################################
+# 9. ANÁLISIS CHI-CUADRADO               #
 ###########################################
 
 cat("\nEvaluando capacidad predictiva de variables discretas mediante Chi-cuadrado...\n")
