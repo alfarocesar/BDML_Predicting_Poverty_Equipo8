@@ -3,7 +3,7 @@
 # PROYECTO: Predicción de Pobreza en Colombia                                 #
 # DESCRIPCIÓN: Limpieza y transformación de la base de personas,              #
 #              incluyendo creación de variables binarias y agregadas.         #
-# FECHA: 13 de abril de 2025                                                  #
+# FECHA: 10 de abril de 2025                                                  #
 ################################################################################
 
 # Configurar directorio de trabajo automáticamente
