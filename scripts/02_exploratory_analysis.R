@@ -28,7 +28,7 @@ pacman::p_load(
 )
 
 # Fijar semilla para reproducibilidad
-set.seed(123)
+set.seed(1051)
 
 ################################################################################
 # 1. CARGA DE DATOS UNIDOS                                                     #
