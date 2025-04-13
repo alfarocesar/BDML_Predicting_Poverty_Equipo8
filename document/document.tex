@@ -102,7 +102,9 @@ Este documento presenta el análisis de datos y la implementación de modelos de
 \end{center}
 
 \pagebreak
-\doublespacing
+\singlespacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %           DOCUMENTO                       %
@@ -112,10 +114,6 @@ Este documento presenta el análisis de datos y la implementación de modelos de
 Breve descripción del problema, antecedentes y motivación del estudio.
 
 \section{Datos}
-\subsection{Descripción de la base de datos}
-
-\section{Data}
-
 \subsection{Adecuación de los datos}
 
 Los datos utilizados en este estudio provienen de DANE y la misión "Empalme de las Series de Empleo, Pobreza y Desigualdad (MESE)". Estos datos son adecuados para resolver el problema de predicción de pobreza por varias razones. Primero, contienen información detallada a nivel de hogar e individuo, lo que permite capturar la heterogeneidad socioeconómica de la población colombiana. Segundo, incluyen la variable objetivo de interés (Pobre) que está correctamente definida según el criterio oficial del DANE: un hogar es clasificado como pobre si su ingreso per cápita es menor a la línea de pobreza establecida. Tercero, contienen variables sobre composición demográfica, características laborales, educativas y de vivienda que son teóricamente relevantes para explicar la pobreza.
