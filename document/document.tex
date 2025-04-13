@@ -113,38 +113,181 @@ Breve descripción del problema, antecedentes y motivación del estudio.
 
 \section{Datos}
 \subsection{Descripción de la base de datos}
-Explicación de la estructura de los datos y variables clave.
 
-\subsection{Procesamiento y limpieza de datos}
-Metodologías aplicadas para la adecuación de los datos.
+\section{Data}
+
+\subsection{Adecuación de los datos}
+
+Los datos utilizados en este estudio provienen de DANE y la misión "Empalme de las Series de Empleo, Pobreza y Desigualdad (MESE)". Estos datos son adecuados para resolver el problema de predicción de pobreza por varias razones. Primero, contienen información detallada a nivel de hogar e individuo, lo que permite capturar la heterogeneidad socioeconómica de la población colombiana. Segundo, incluyen la variable objetivo de interés (Pobre) que está correctamente definida según el criterio oficial del DANE: un hogar es clasificado como pobre si su ingreso per cápita es menor a la línea de pobreza establecida. Tercero, contienen variables sobre composición demográfica, características laborales, educativas y de vivienda que son teóricamente relevantes para explicar la pobreza.
+
+Para este análisis, disponemos de cuatro conjuntos de datos divididos en entrenamiento y prueba a nivel de hogar e individuo: \texttt{train\_hogares.csv}, \texttt{train\_personas.csv}, \texttt{test\_hogares.csv} y \texttt{test\_personas.csv}. Esta división permite realizar predicciones fuera de muestra, lo que representa un desafío adicional ya que algunas variables presentes en los datos de entrenamiento están ausentes en los de prueba, simulando un escenario real donde no toda la información está disponible al momento de realizar predicciones.
+
+Verificamos que la variable objetivo \textit{Pobre} esté correctamente definida siguiendo la metodología del DANE, mediante la comparación con cálculos propios:
+
+\begin{equation}
+\text{Pobre} = I(\text{Ingpcug} < \text{Lp})
+\end{equation}
+
+Al realizar esta validación, obtuvimos una coincidencia del 100\% con la variable original, confirmando su correcta definición. La distribución de la variable objetivo reveló un desbalance importante: el 80\% de los hogares se clasifican como no pobres, mientras que el 20\% son considerados pobres, lo que requirió estrategias específicas durante el modelamiento.
+
+{\color{blue} Incluir tabla: Distribución de la Variable Objetivo (Pobreza)}
+
+\subsection{Construcción de la muestra}
+
+El proceso de construcción de la muestra involucró varios pasos clave para garantizar datos limpios y adecuados para el modelamiento:
+
+\subsubsection{Análisis de la base train\_hogares y comparación con test\_hogares}
+
+Se inició el trabajo con una revisión detallada de las variables disponibles en la base de entrenamiento de hogares (\texttt{train\_hogares}), comparándolas con las de la base de prueba (\texttt{test\_hogares}). Este paso fue crucial para identificar variables que, al estar ausentes en la prueba, debían eliminarse del análisis o de la base consolidada. En particular, se eliminaron las siguientes variables porque contenían información directa del ingreso o porque solo existían en la base de entrenamiento:
+
+\texttt{Ingtotug, Ingtotugarr, Ingpcug, Indigente, Npobres, Nindigentes}
+
+Estas variables, aunque relevantes, no estaban disponibles para predicción en la base de prueba, por lo tanto, su inclusión habría implicado una filtración de información inadecuada. Además, se eliminaron variables que no aportan al análisis predictivo como:
+
+\texttt{Directorio, Secuencia\_p, Mes, P5130, Fex\_c, Fex\_dpto}
+
+Las variables \texttt{P5100} y \texttt{P5140} fueron tratadas como gastos que pueden legítimamente tomar valor cero, por lo cual los valores faltantes se imputaron con ceros.
+
+\subsubsection{Análisis de la base train\_personas y comparación con test\_personas}
+
+Se realizó una limpieza similar en las bases de individuos. Se eliminaron variables que no están disponibles en ambas bases o que no describen características estables del hogar. En este grupo se encuentran identificadores (\texttt{Directorio, Secuencia\_p}), variables temporales (\texttt{Mes}), ponderadores (\texttt{Fex\_c, Fex\_dpto}) y una lista extensa de variables relacionadas con ingresos individuales, que no están disponibles en la base de prueba.
+
+Además, se excluyeron variables que no aportaban valor predictivo directo a nivel hogar, como \texttt{Orden}. Para las variables categóricas binarias que solo tomaban valores 1 y NA (como \texttt{Pet, Oc, Des, Ina}), los valores faltantes fueron transformados en ceros, con el fin de estandarizar su uso en los conteos que alimentan la base de hogares.
+
+\subsubsection{Construcción de nuevas variables para consolidar la base de hogares}
+
+Utilizamos la variable \texttt{id} como clave para unir las bases de datos de hogares e individuos. Sin embargo, esto requirió un paso previo de agregación para transformar la información a nivel de individuos en variables a nivel de hogar:
+
+\begin{itemize}
+    \item \textbf{Conteos:} Se contó el número de miembros que cumplían ciertas condiciones (por ejemplo, número de ocupados, hombres, mujeres, menores de edad, personas en edad de trabajar, desocupados e inactivos).
+    \item \textbf{Proporciones:} Para variables categóricas como afiliación a seguridad social (\texttt{P6090}) o deseo de más horas (\texttt{P6240}), se calcularon proporciones sobre el total de personas en edad de trabajar (\texttt{Pet = 1}).
+    \item \textbf{Estadísticas demográficas:} Se calcularon edad promedio, máximo nivel educativo en el hogar, promedio de horas trabajadas usando variables como \texttt{P6040}, \texttt{P6210s1} y \texttt{P6800}.
+    \item \textbf{Indicadores de seguridad social:} Proporción de afiliados, cotización a pensión.
+    \item \textbf{Características laborales:} Proporciones por tipo de ocupación, tamaño de empresa, actividades adicionales.
+    \item \textbf{Características específicas del jefe de hogar:} Edad, sexo, nivel educativo y situación laboral.
+\end{itemize}
+
+Esta agregación nos permitió generar 37 nuevas variables derivadas que capturan la estructura y características socioeconómicas del hogar, enriqueciendo significativamente el conjunto de datos. El enfoque utilizado garantiza que las variables incorporadas describan características estructurales del hogar y puedan ser calculadas en la base de prueba, utilizando únicamente la información disponible en ambas bases.
+
+\subsection{Limpieza de datos y tratamiento de valores faltantes}
+
+El análisis de valores faltantes reveló patrones importantes:
+
+\begin{itemize}
+    \item La mayoría de variables tienen menos del 15\% de valores faltantes, siendo procesables con técnicas de imputación.
+    \item Identificamos variables con alta proporción de valores faltantes (>33\%) como \texttt{jefe\_tiempo\_trabajo} y varias proporciones de características específicas que fueron candidatas a eliminación.
+    \item Las variables relacionadas con ingresos complementarios presentaban patrones de valores faltantes no aleatorios, siendo más frecuentes en hogares no pobres.
+\end{itemize}
+
+Como parte de la limpieza, se eliminaron variables con más del 33\% de valores faltantes en la base consolidada. Esta decisión se basó en las buenas prácticas revisadas en clase y en los tutoriales de preprocesamiento de datos.
+
+Para las variables restantes con valores faltantes, se adoptaron las siguientes estrategias:
+
+\begin{itemize}
+    \item \textbf{Imputación con la mediana:} Para variables numéricas como \texttt{promedio\_horas\_trab}, \texttt{prop\_cotiza\_pension}, \texttt{prop\_actividad\_adicional} y \texttt{prop\_desea\_mas\_horas}, se imputó la mediana dentro de cada base (train o test).
+    \item \textbf{Imputación con la moda:} Variables categóricas como \texttt{max\_nivel\_educativo} y discretas como \texttt{max\_años\_educ} fueron imputadas con su moda, debido a su naturaleza y su importancia como predictores.
+    \item \textbf{Para variables como \texttt{prop\_afiliados\_ss} y \texttt{prop\_busca\_trabajo}:} También se utilizó la mediana para la imputación.
+\end{itemize}
+
+Estas decisiones fueron implementadas en el script \texttt{03\_data\_cleaning\_Fast.R}.
+
+\subsubsection{Manejo de variables categóricas}
+
+Un análisis especial se realizó para la variable \texttt{Oficio}, que presentaba más de 80 categorías diferentes. Mediante un análisis de asociación con la variable objetivo, agrupamos los oficios en tres categorías según su relación con la pobreza:
+\begin{itemize}
+    \item \textbf{Grupo 1:} Oficios con baja tasa de pobreza (promedio 17\%)
+    \item \textbf{Grupo 2:} Oficios con tasa media de pobreza (promedio 37\%)
+    \item \textbf{Grupo 3:} Oficios con alta tasa de pobreza (promedio 59\%)
+\end{itemize}
+
+Esta agrupación simplificó el modelamiento y mejoró la interpretabilidad manteniendo la relevancia predictiva.
+
+\subsection{Análisis descriptivo}
+
+\subsubsection{Distribución de la pobreza}
+
+La variable objetivo presenta un desbalance notable: el 79.9\% de los hogares se clasifican como no pobres y el 20.1\% como pobres, con un ratio de desbalance de aproximadamente 4:1.
+
+{\color{blue} Incluir tabla: Distribución de la Variable Objetivo (Pobreza)}
+
+\subsubsection{Características por estado de pobreza}
+
+El análisis reveló diferencias significativas entre hogares pobres y no pobres:
+
+{\color{blue} Incluir figura: Distribución de horas trabajadas por estado de pobreza}
+
+Los hogares pobres tienden a reportar menos horas trabajadas en promedio, lo que se relaciona con condiciones laborales más precarias y menor estabilidad en el empleo.
+
+Encontramos variables altamente correlacionadas con la pobreza, destacando:
+\begin{itemize}
+    \item \textbf{Negativas (menor valor asociado a mayor pobreza):} Proporción de cotizantes a pensión (-0.51), proporción de trabajadores en empresas grandes (-0.47), y máximo nivel educativo (-0.39).
+    \item \textbf{Positivas (mayor valor asociado a mayor pobreza):} Proporción de oficios del grupo 3 (0.43), número de menores (0.37) y proporción de inactivos (0.31).
+\end{itemize}
+
+{\color{blue} Incluir figura: Variables con mayor correlación con la pobreza}
+
+Este análisis de correlaciones ayudó a identificar las variables más relevantes para la predicción, permitiéndonos crear un conjunto parsimonioso y predictivo.
+
+\subsubsection{Importancia de la composición familiar y laboral}
+
+El análisis chi-cuadrado para variables categóricas reveló asociaciones significativas entre pobreza y diversas características:
+
+\begin{itemize}
+    \item La presencia de jefes de hogar ocupados reduce significativamente la probabilidad de pobreza (V de Cramér = 0.23)
+    \item Los hogares con mayor proporción de miembros en oficios del grupo 3 (alta tasa de pobreza) tienen mayor probabilidad de ser pobres (V de Cramér = 0.31)
+    \item El nivel educativo del jefe de hogar muestra una fuerte asociación con la pobreza (V de Cramér = 0.27)
+\end{itemize}
+
+Estos hallazgos confirman la importancia de variables relacionadas con capital humano, estructura familiar y características laborales para predecir la pobreza.
+
+\subsection{Justificación de la selección de variables}
+
+La selección final de variables para nuestros modelos se basó en tres criterios principales:
+
+\begin{enumerate}
+    \item \textbf{Relevancia predictiva:} Utilizamos correlaciones con la variable objetivo y pruebas chi-cuadrado para identificar las variables más predictivas.
+    \item \textbf{Disponibilidad en datos de prueba:} Garantizamos que todas las variables seleccionadas estuvieran disponibles tanto en el conjunto de entrenamiento como en el de prueba.
+    \item \textbf{Parsimonia:} Buscamos un conjunto mínimo de variables que maximizara el poder predictivo.
+\end{enumerate}
+
+Eliminamos variables con más del 33\% de valores faltantes y aquellas con alta redundancia (correlacionadas entre sí a más de 0.7). Para variables con correlación alta, mantuvimos la que presentaba mayor asociación con la variable objetivo.
+
+En el caso de variables categóricas como la ocupación, optamos por transformaciones que preservaran su poder predictivo al tiempo que simplificaban el modelamiento (agrupación en 3 categorías).
+
+Las variables finales incluyeron:
+\begin{itemize}
+    \item \textbf{Características del hogar:} Número de miembros, relación de dependencia, proporción de ocupados.
+    \item \textbf{Capital humano:} Nivel educativo máximo y del jefe de hogar, proporción de afiliados a seguridad social.
+    \item \textbf{Características laborales:} Distribución por grupos de ocupación, horas trabajadas, tamaño de empresa.
+    \item \textbf{Características del jefe de hogar:} Sexo, edad, ocupación.
+    \item \textbf{Vivienda y ubicación:} Características de la vivienda, departamento.
+\end{itemize}
+
+El flujo de trabajo seguido en esta etapa responde a varios objetivos:
+
+\begin{itemize}
+    \item \textbf{Evitar fuga de información:} Se eliminaron variables disponibles solo en el entrenamiento.
+    \item \textbf{Garantizar la coherencia entre bases:} Se preservaron únicamente las variables comunes entre train y test.
+    \item \textbf{Convertir la información individual en predictores agregados:} Esto permite maximizar el uso de la información disponible sin violar las restricciones impuestas por la estructura del problema.
+    \item \textbf{Preparar una base limpia y funcional para modelado:} Las bases \texttt{train\_cleaned.csv} y \texttt{test\_cleaned.csv} contienen las variables seleccionadas e imputadas, listas para el entrenamiento de modelos.
+\end{itemize}
+
+Este conjunto final de variables balanceó el poder predictivo, la disponibilidad en los datos de prueba y la parsimonia, permitiéndonos construir modelos robustos y generalizables para la predicción de pobreza.
 
 \subsection{Análisis descriptivo}
 Exploración de la variabilidad de los datos con tablas y gráficos.
 
 % Este es un ejemplo de como incorporar las gráficas en el documento
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{../views/figures/poverty_distribution.png}
-    \caption{Distribución de la pobreza}
-    \label{fig:distribución_pobreza}
-\end{figure}
+%\begin{figure}[htbp]
+%    \centering
+%    \includegraphics[width=0.8\textwidth]{../views/figures/poverty_distribution.png}
+%    \caption{Distribución de la pobreza}
+%    \label{fig:distribución_pobreza}
+%\end{figure}
 
 % Este es un ejemplo de como incorporar tablas en el documento
-\input{../views/tables/descriptive_statistics.tex}
-\input{../views/tables/analisis_categoricas_pobreza.tex}
-\input{../views/tables/categorical_variables_summary.tex}
-\input{../views/tables/correlacion_variables_pobreza.tex}
-\input{../views/tables/missing_values_analysis.tex}
-\input{../views/tables/numeric_variables_summary.tex}
-\input{../views/tables/outlier_analysis.tex}
-\input{../views/tables/poverty_distribution.tex}
-\input{../views/tables/train_summary_statistics.tex}
-\input{../views/tables/variables_candidatas_eliminar.tex}
-\input{../views/tables/variables_candidatas_one_hot.tex}
-\input{../views/tables/variables_clasificacion.tex}
-\input{../views/tables/variables_con_outliers.tex}
-\input{../views/tables/variables_importantes.tex}
-\input{../views/tables/variables_redundantes.tex}
+%\input{../views/tables/descriptive_statistics.tex}
+%\input{../views/tables/analisis_categoricas_pobreza.tex}
 
 \section{Modelos y Resultados}
 \subsection{Metodología}
