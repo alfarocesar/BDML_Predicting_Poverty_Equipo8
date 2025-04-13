@@ -526,10 +526,22 @@ comparacion_missing <- train_missing %>%
 cat("\nComparación de valores faltantes entre train_final y test_final:\n")
 print(comparacion_missing, n = nrow(comparacion_missing))
 
-write.csv(comparacion_missing, "views/tables/missing_values_comparison.csv", row.names = FALSE)
+# Guardar los resultados para análisis posterior
+if (!dir.exists("stores/processed/analysis")) {
+  dir.create("stores/processed/analysis", recursive = TRUE)
+}
+
+write.csv(comparacion_missing, "stores/processed/analysis/missing_values_comparison.csv", row.names = FALSE)
 
 cat("\nLa comparación completa de valores faltantes se ha guardado en:\n")
-cat("- views/tables/missing_values_comparison.csv\n")
+cat("- stores/processed/analysis/missing_values_comparison.csv\n")
+
+# Contar las variables con diferencias
+cat("\nResumen de diferencias en porcentaje de valores faltantes:\n")
+cat("- Total de variables comparadas:", nrow(comparacion_missing), "\n")
+cat("- Variables con más faltantes en train:", sum(comparacion_missing$diferencia_pct < 0), "\n")
+cat("- Variables con más faltantes en test:", sum(comparacion_missing$diferencia_pct > 0), "\n")
+cat("- Variables con igual proporción:", sum(comparacion_missing$diferencia_pct == 0), "\n")
 
 ################################################################################
 # 8. GUARDAR DATOS UNIDOS                                                     #
@@ -540,6 +552,10 @@ cat("Guardando datos unidos...\n")
 # Guardar conjuntos de datos unidos
 write.csv(train_final, "stores/processed/train_joined.csv", row.names = FALSE)
 write.csv(test_final, "stores/processed/test_joined.csv", row.names = FALSE)
+
+# También guardar un archivo RDS que preserva tipos de datos
+saveRDS(train_final, "stores/processed/train_joined.rds")
+saveRDS(test_final, "stores/processed/test_joined.rds")
 
 cat("Datos unidos guardados en 'stores/processed/'.\n")
 cat("La imputación adicional de valores faltantes y transformaciones adicionales\n")

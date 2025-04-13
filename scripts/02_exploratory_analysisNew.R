@@ -3,7 +3,7 @@
 # PROYECTO: Predicción de Pobreza en Colombia - Equipo 8                      #
 # DESCRIPCIÓN: Análisis exploratorio de datos para la toma de decisiones      #
 #              sobre el preprocesamiento y modelamiento                       #
-# FECHA: 9 de abril de 2025                                                   #
+# FECHA: 10 de abril de 2025                                                  #
 ################################################################################
 
 # Configurar directorio de trabajo automáticamente
@@ -70,6 +70,16 @@ poverty_distribution <- train_data %>%
   count(Pobre) %>%
   mutate(proportion = n / sum(n) * 100)
 
+# Guardar en formato LaTeX
+print(xtable(poverty_distribution, 
+             caption = "Distribución de la Variable Objetivo (Pobreza)", 
+             label = "tab:poverty_distribution"),
+      file = "views/tables/poverty_distribution.tex",
+      include.rownames = FALSE,
+      floating = TRUE,
+      latex.environments = "center",
+      booktabs = TRUE)
+
 # Mostrar desequilibrio de clases en consola
 cat("Distribución de la variable objetivo:\n")
 print(poverty_distribution)
@@ -115,6 +125,18 @@ if(length(cat_vars_for_facet) > 0) {
   }
 }
 
+# Crear gráfico básico para mostrar distribución general si no hay variables para facet
+png("views/figures/poverty_distribution.png", width = 800, height = 600, res = 100)
+ggplot(poverty_distribution, aes(x = Pobre, y = n, fill = Pobre)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(round(proportion, 1), "%")), vjust = -0.5) +
+  theme_minimal() +
+  labs(title = "Distribución de Pobreza",
+       x = "",
+       y = "Número de Hogares") +
+  scale_fill_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral"))
+dev.off()
+
 ################################################################################
 # 3. ANÁLISIS DE VALORES FALTANTES                                             #
 ################################################################################
@@ -122,11 +144,12 @@ if(length(cat_vars_for_facet) > 0) {
 cat("Analizando valores faltantes...\n")
 
 # 3.1 Visualización general de valores faltantes usando visdat
-# Tomar una muestra del dataset para evitar el error de tamaño
-sample_size <- min(5000, nrow(train_data))  # Limitar a 5000 filas para visualización
+# Tomar una muestra del dataset para evitar el error de tamaño grande
+sample_size <- min(5000, nrow(train_data))
 train_data_sample <- train_data %>% 
   sample_n(sample_size)
 
+# Visualizar valores faltantes en la muestra
 png("views/figures/missing_values_pattern.png", width = 1200, height = 800, res = 100)
 vis_miss(train_data_sample, warn_large_data = FALSE)
 dev.off()
@@ -178,9 +201,11 @@ missing_matrix <- train_data %>%
   as.data.frame() %>%
   select_if(function(x) sum(x) > 0)  # solo variables con al menos un NA
 
-# Si hay suficientes variables con valores faltantes, calcular correlación
+# Si hay suficientes variables con valores faltantes (al menos 2), calcular correlación
 if(ncol(missing_matrix) > 1) {
-  missing_cors <- cor(missing_matrix)
+  # Usar muestra para mejorar rendimiento
+  missing_matrix_sample <- missing_matrix[sample(nrow(missing_matrix), min(10000, nrow(missing_matrix))), ]
+  missing_cors <- cor(missing_matrix_sample)
   
   # Visualizar correlaciones de valores faltantes
   png("views/figures/missing_correlation.png", width = 900, height = 900, res = 100)
@@ -320,52 +345,66 @@ if(length(numeric_vars_continuous) > 0) {
   # Para calcular correlación necesitamos convertir Pobre a numérico
   pobre_numeric <- as.numeric(train_data$Pobre) - 1
   
-  correlations <- sapply(numeric_vars_continuous, function(var) {
-    tryCatch({
-      cor(train_data[[var]], pobre_numeric, use = "pairwise.complete.obs")
-    }, error = function(e) NA)
-  })
-  
-  # Eliminar NA y ordenar por correlación absoluta
-  correlations <- correlations[!is.na(correlations)]
-  top_vars <- names(correlations[order(abs(correlations), decreasing = TRUE)][1:min(12, length(correlations))])
-  
-  # Crear boxplots para cada variable
-  for(var in top_vars) {
-    # Evitar variables con demasiados valores NA
-    if(sum(is.na(train_data[[var]])) / nrow(train_data) < 0.3) {
-      # Crear plot combinando boxplot y puntos
-      p <- ggplot(train_data, aes(x = Pobre, y = get(var), fill = Pobre)) +
-        geom_boxplot(alpha = 0.7, outlier.shape = NA) +  # Sin outliers para evitar duplicados
-        geom_jitter(alpha = 0.1, width = 0.2) +  # Añadir puntos con jitter para mejor visualización
-        theme_minimal() +
-        scale_fill_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
-        labs(title = paste("Distribución de", var, "por Estado de Pobreza"),
-             y = var,
-             x = "")
+  # Calcular correlaciones evitando errores por NAs o desviación estándar cero
+  correlations <- numeric()
+  for(var in numeric_vars_continuous) {
+    # Solo calcular si hay suficientes valores y hay variabilidad
+    var_values <- train_data[[var]]
+    if(sum(!is.na(var_values)) > 30 && sd(var_values, na.rm = TRUE) > 0.001) {
+      cor_val <- tryCatch({
+        cor(var_values, pobre_numeric, use = "pairwise.complete.obs")
+      }, error = function(e) NA)
       
-      # Guardar gráfico
-      png(paste0("views/figures/boxplot_", var, ".png"), width = 800, height = 600, res = 100)
-      print(p)
-      dev.off()
+      if(!is.na(cor_val)) {
+        correlations[var] <- cor_val
+      }
     }
   }
   
-  # Crear gráficos de densidad para las mismas variables
-  for(var in top_vars) {
-    if(sum(is.na(train_data[[var]])) / nrow(train_data) < 0.3) {
-      p <- ggplot(train_data, aes(x = get(var), fill = Pobre)) +
-        geom_density(alpha = 0.5) +
-        theme_minimal() +
-        scale_fill_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
-        labs(title = paste("Densidad de", var, "por Estado de Pobreza"),
-             x = var,
-             y = "Densidad")
-      
-      # Guardar gráfico
-      png(paste0("views/figures/density_", var, ".png"), width = 800, height = 600, res = 100)
-      print(p)
-      dev.off()
+  # Eliminar NA y ordenar por correlación absoluta
+  correlations <- correlations[!is.na(correlations)]
+  if(length(correlations) > 0) {
+    top_vars <- names(correlations[order(abs(correlations), decreasing = TRUE)][1:min(12, length(correlations))])
+    
+    # Crear boxplots para cada variable
+    for(var in top_vars) {
+      # Evitar variables con demasiados valores NA
+      if(sum(is.na(train_data[[var]])) / nrow(train_data) < 0.3) {
+        # Crear data.frame sin NAs para esta variable
+        plot_data <- train_data %>% 
+          filter(!is.na(get(var))) %>%
+          # Tomar una muestra para mejorar rendimiento
+          sample_n(min(3000, sum(!is.na(train_data[[var]]))))
+        
+        # Crear plot combinando boxplot y puntos
+        p <- ggplot(plot_data, aes(x = Pobre, y = get(var), fill = Pobre)) +
+          geom_boxplot(alpha = 0.7, outlier.shape = NA) +  # Sin outliers para evitar duplicados
+          geom_jitter(alpha = 0.1, width = 0.2) +  # Añadir puntos con jitter para mejor visualización
+          theme_minimal() +
+          scale_fill_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
+          labs(title = paste("Distribución de", var, "por Estado de Pobreza"),
+               y = var,
+               x = "")
+        
+        # Guardar gráfico
+        png(paste0("views/figures/boxplot_", var, ".png"), width = 800, height = 600, res = 100)
+        print(p)
+        dev.off()
+        
+        # Crear gráfico de densidad
+        p_density <- ggplot(plot_data, aes(x = get(var), fill = Pobre)) +
+          geom_density(alpha = 0.5) +
+          theme_minimal() +
+          scale_fill_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
+          labs(title = paste("Densidad de", var, "por Estado de Pobreza"),
+               x = var,
+               y = "Densidad")
+        
+        # Guardar gráfico
+        png(paste0("views/figures/density_", var, ".png"), width = 800, height = 600, res = 100)
+        print(p_density)
+        dev.off()
+      }
     }
   }
 }
@@ -401,11 +440,31 @@ if(length(categorical_vars) > 0) {
               booktabs = TRUE)
       }
       
-      # Realizar prueba chi-cuadrado
-      chi_result <- chisq.test(cont_table, correct = FALSE)
+      # Realizar prueba chi-cuadrado con manejo de tablas pequeñas
+      if(sum(cont_table < 5)/length(cont_table) > 0.2) {
+        # Si más del 20% de las celdas tienen menos de 5 observaciones, usar simulación
+        chi_result <- tryCatch({
+          chisq.test(cont_table, simulate.p.value = TRUE, B = 2000)
+        }, error = function(e) {
+          # En caso de error, intentar Fisher para tablas 2x2
+          if(nrow(cont_table) <= 2 && ncol(cont_table) <= 2) {
+            fisher.test(cont_table)
+          } else {
+            # Si no es 2x2 y hay error, devolver NA
+            list(statistic = NA, p.value = NA, parameter = NA)
+          }
+        })
+      } else {
+        # Si hay suficientes observaciones, usar la prueba chi-cuadrado estándar
+        chi_result <- chisq.test(cont_table, correct = FALSE)
+      }
       
-      # Calcular V de Cramer (coeficiente de asociación)
-      cramers_v <- sqrt(chi_result$statistic / (sum(cont_table) * min(nrow(cont_table)-1, ncol(cont_table)-1)))
+      # Calcular V de Cramer (coeficiente de asociación) solo si no hay NAs
+      if(!is.na(chi_result$statistic) && !is.na(chi_result$parameter)) {
+        cramers_v <- sqrt(chi_result$statistic / (sum(cont_table) * min(nrow(cont_table)-1, ncol(cont_table)-1)))
+      } else {
+        cramers_v <- NA
+      }
       
       # Guardar resultados
       contingency_results <- rbind(contingency_results, data.frame(
@@ -419,22 +478,28 @@ if(length(categorical_vars) > 0) {
     }
   }
   
+  # Eliminar filas con NAs
+  contingency_results <- contingency_results %>% 
+    filter(!is.na(chi_squared) & !is.na(p_value))
+  
   # Ordenar por p-valor (menor a mayor)
-  contingency_results <- contingency_results %>% arrange(p_value)
-  
-  # Guardar resultados en formato LaTeX
-  print(xtable(contingency_results, 
-               caption = "Pruebas de Independencia Chi-Cuadrado para Variables Categóricas vs Pobreza", 
-               label = "tab:chi_squared_tests"),
-        file = "views/tables/chi_squared_tests.tex",
-        include.rownames = FALSE,
-        floating = TRUE,
-        latex.environments = "center",
-        booktabs = TRUE)
-  
-  # Mostrar resultados en consola
-  cat("Resultados de pruebas chi-cuadrado para variables categóricas vs pobreza:\n")
-  print(contingency_results)
+  if(nrow(contingency_results) > 0) {
+    contingency_results <- contingency_results %>% arrange(p_value)
+    
+    # Guardar resultados en formato LaTeX
+    print(xtable(contingency_results, 
+                 caption = "Pruebas de Independencia Chi-Cuadrado para Variables Categóricas vs Pobreza", 
+                 label = "tab:chi_squared_tests"),
+          file = "views/tables/chi_squared_tests.tex",
+          include.rownames = FALSE,
+          floating = TRUE,
+          latex.environments = "center",
+          booktabs = TRUE)
+    
+    # Mostrar resultados en consola
+    cat("Resultados de pruebas chi-cuadrado para variables categóricas vs pobreza:\n")
+    print(contingency_results)
+  }
 }
 
 ################################################################################
@@ -444,21 +509,36 @@ if(length(categorical_vars) > 0) {
 cat("Analizando correlaciones entre variables...\n")
 
 # 5.1 Análisis de correlación para variables numéricas
-# Seleccionar solo variables numéricas continuas
-corr_vars <- numeric_vars_continuous
+# Seleccionar solo variables numéricas continuas con suficiente variabilidad
+corr_vars <- numeric()
+for(var in numeric_vars_continuous) {
+  # Verificar suficientes valores y variabilidad
+  var_values <- train_data[[var]]
+  if(sum(!is.na(var_values)) > 100 && sd(var_values, na.rm = TRUE) > 0.001) {
+    corr_vars <- c(corr_vars, var)
+  }
+}
+
+# Limitar a 15 variables para mejor visualización
+if(length(corr_vars) > 15) {
+  corr_vars <- sample(corr_vars, 15)
+}
 
 # Verificar que hay suficientes variables para calcular correlaciones
 if (length(corr_vars) >= 2) {
-  # Crear data frame para correlación
+  # Crear data frame para correlación y eliminar filas con NA
   corr_data <- train_data %>% select(all_of(corr_vars))
   
-  # Eliminar filas con NA para cálculo de correlación
-  corr_data <- corr_data[complete.cases(corr_data), ]
+  # Usar una muestra para mejorar rendimiento
+  sample_size <- min(5000, nrow(corr_data))
+  corr_data_sample <- corr_data %>% 
+    sample_n(sample_size) %>%
+    na.omit()  # Eliminar filas con NA
   
   # Si todavía hay suficientes datos
-  if (nrow(corr_data) > 30 && ncol(corr_data) >= 2) {
+  if (nrow(corr_data_sample) > 30 && ncol(corr_data_sample) >= 2) {
     # Calcular matriz de correlación
-    correlation_matrix <- cor(corr_data)
+    correlation_matrix <- cor(corr_data_sample, use = "pairwise.complete.obs")
     
     # Crear visualización de correlaciones usando corrplot con agrupamiento jerárquico
     png("views/figures/correlation_heatmap.png", width = 1200, height = 1200, res = 120)
@@ -511,28 +591,63 @@ if (length(corr_vars) >= 2) {
     }
     
     # 5.2 Crear matriz de scatter plots para las variables más correlacionadas
-    # Limitar a 5-7 variables para mantener la legibilidad
     if (length(corr_vars) > 0) {
+      # Elegir algunas variables representativas (limitar a 3-5 para mejor visualización)
+      if(length(corr_vars) > 5) {
+        scatter_vars <- sample(corr_vars, 4)  # Limitar a 4 variables numéricas
+      } else {
+        scatter_vars <- corr_vars
+      }
+      
       # Añadir la variable objetivo para ver relaciones
-      plot_vars <- c(sample(corr_vars, min(6, length(corr_vars))), "Pobre")
+      plot_vars <- c(scatter_vars, "Pobre")
       
       # Crear data frame para plotting
       plot_data <- train_data %>% 
         select(all_of(plot_vars)) %>%
-        # Tomar una muestra aleatoria si hay demasiadas filas para el scatter plot
-        sample_n(min(1000, nrow(.)))
+        # Eliminar filas con NA
+        na.omit() %>%
+        # Tomar una muestra aleatoria para el scatter plot
+        sample_n(min(800, nrow(.)))
       
-      # Crear matriz de scatter plots
-      png("views/figures/scatter_matrix.png", width = 1200, height = 1200, res = 120)
-      ggpairs(plot_data, 
-              aes(color = Pobre, alpha = 0.5),  # Colorear por estado de pobreza
-              lower = list(continuous = "points"), # Puntos en panel inferior
-              upper = list(continuous = "cor"),   # Correlaciones en panel superior
-              diag = list(continuous = "densityDiag"), # Densidades en diagonal
-              progress = FALSE) +                 # No mostrar barra de progreso
-        scale_color_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
-        theme_minimal()
-      dev.off()
+      # Solo intentar crear matriz si hay al menos 2 variables y suficientes datos
+      if(ncol(plot_data) >= 3 && nrow(plot_data) >= 50) {
+        # Crear matriz de scatter plots
+        tryCatch({
+          png("views/figures/scatter_matrix.png", width = 1200, height = 1200, res = 120)
+          p <- ggpairs(plot_data, 
+                       aes(color = Pobre, alpha = 0.5),  # Colorear por estado de pobreza
+                       lower = list(continuous = "points"), # Puntos en panel inferior
+                       upper = list(continuous = "cor"),   # Correlaciones en panel superior
+                       diag = list(continuous = "densityDiag"), # Densidades en diagonal
+                       progress = FALSE) +                 # No mostrar barra de progreso
+            scale_color_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
+            theme_minimal()
+          print(p)
+          dev.off()
+        }, error = function(e) {
+          cat("Error al crear matriz de scatter plots:", conditionMessage(e), "\n")
+          cat("Creando gráficos individuales en su lugar...\n")
+          
+          # Si falla la matriz, crear gráficos individuales
+          for(i in 1:(length(scatter_vars))) {
+            var <- scatter_vars[i]
+            
+            # Crear scatter plot individual
+            png(paste0("views/figures/scatter_", var, "_by_poverty.png"), width = 800, height = 600, res = 100)
+            p_scatter <- ggplot(plot_data, aes_string(x = var, color = "Pobre", fill = "Pobre")) +
+              geom_density(alpha = 0.5) +
+              theme_minimal() +
+              scale_color_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
+              scale_fill_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
+              labs(title = paste("Distribución de", var, "por Estado de Pobreza"),
+                   x = var,
+                   y = "Densidad")
+            print(p_scatter)
+            dev.off()
+          }
+        })
+      }
     }
   }
 }
@@ -547,6 +662,20 @@ cat("Analizando outliers usando método IQR...\n")
 analyze_outliers_iqr <- function(data, var_name) {
   # Eliminar NA
   var_data <- data[[var_name]][!is.na(data[[var_name]])]
+  
+  # Si no hay suficientes datos, retornar NA
+  if(length(var_data) < 30) {
+    return(data.frame(
+      variable = var_name,
+      n_total = length(var_data),
+      n_outliers = NA,
+      pct_outliers = NA,
+      lower_bound = NA,
+      upper_bound = NA,
+      min_value = ifelse(length(var_data) > 0, min(var_data), NA),
+      max_value = ifelse(length(var_data) > 0, max(var_data), NA)
+    ))
+  }
   
   # Calcular cuartiles y rango intercuartílico
   q1 <- quantile(var_data, 0.25)
@@ -585,40 +714,52 @@ if(length(outlier_vars) > 0) {
     analyze_outliers_iqr(train_data, var)
   }))
   
+  # Filtrar variables con análisis completo (no NA)
+  outlier_analysis <- outlier_analysis %>% 
+    filter(!is.na(pct_outliers))
+  
   # Ordenar por porcentaje de outliers
-  outlier_analysis <- outlier_analysis %>% arrange(desc(pct_outliers))
-  
-  # Guardar análisis de outliers en formato LaTeX
-  print(xtable(outlier_analysis, 
-               caption = "Análisis de Outliers (Método IQR)", 
-               label = "tab:outliers"),
-        file = "views/tables/outlier_analysis.tex",
-        include.rownames = FALSE,
-        floating = TRUE,
-        latex.environments = "center",
-        booktabs = TRUE)
-  
-  # Mostrar variables con más outliers
-  cat("Variables con mayor porcentaje de outliers:\n")
-  print(head(outlier_analysis, 10))
-  
-  # Visualizar outliers para las 5 variables con más outliers
-  top_outlier_vars <- head(outlier_analysis$variable, 5)
-  
-  for(var in top_outlier_vars) {
-    # Crear boxplot con puntos para visualizar outliers
-    png(paste0("views/figures/outliers_", var, ".png"), width = 900, height = 600, res = 100)
-    p <- ggplot(train_data, aes(x = Pobre, y = get(var), fill = Pobre)) +
-      geom_boxplot(alpha = 0.7, outlier.shape = NA) +  # No mostrar outliers en el boxplot
-      geom_jitter(aes(color = Pobre), alpha = 0.4, width = 0.25) +  # Añadir puntos con jitter para ver distribución
-      scale_fill_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
-      scale_color_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
-      labs(title = paste("Distribución y Outliers de", var, "por Estado de Pobreza"),
-           y = var,
-           x = "") +
-      theme_minimal()
-    print(p)
-    dev.off()
+  if(nrow(outlier_analysis) > 0) {
+    outlier_analysis <- outlier_analysis %>% arrange(desc(pct_outliers))
+    
+    # Guardar análisis de outliers en formato LaTeX
+    print(xtable(outlier_analysis, 
+                 caption = "Análisis de Outliers (Método IQR)", 
+                 label = "tab:outliers"),
+          file = "views/tables/outlier_analysis.tex",
+          include.rownames = FALSE,
+          floating = TRUE,
+          latex.environments = "center",
+          booktabs = TRUE)
+    
+    # Mostrar variables con más outliers
+    cat("Variables con mayor porcentaje de outliers:\n")
+    print(head(outlier_analysis, 10))
+    
+    # Visualizar outliers para las 5 variables con más outliers
+    top_outlier_vars <- head(outlier_analysis$variable, 5)
+    
+    for(var in top_outlier_vars) {
+      # Crear un subconjunto sin NA para visualizar
+      plot_data <- train_data %>% 
+        filter(!is.na(get(var))) %>%
+        # Limitar tamaño para mejor rendimiento
+        sample_n(min(3000, sum(!is.na(train_data[[var]]))))
+      
+      # Crear boxplot con puntos para visualizar outliers
+      png(paste0("views/figures/outliers_", var, ".png"), width = 900, height = 600, res = 100)
+      p <- ggplot(plot_data, aes(x = Pobre, y = get(var), fill = Pobre)) +
+        geom_boxplot(alpha = 0.7, outlier.shape = NA) +  # No mostrar outliers en el boxplot
+        geom_jitter(aes(color = Pobre), alpha = 0.4, width = 0.25) +  # Añadir puntos con jitter para ver distribución
+        scale_fill_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
+        scale_color_manual(values = c("No Pobre" = "steelblue", "Pobre" = "coral")) +
+        labs(title = paste("Distribución y Outliers de", var, "por Estado de Pobreza"),
+             y = var,
+             x = "") +
+        theme_minimal()
+      print(p)
+      dev.off()
+    }
   }
 }
 
@@ -640,9 +781,11 @@ numerical_target_corr <- data.frame(
 
 # Solo incluir variables numéricas
 for (var in numeric_vars) {
-  if (sum(!is.na(train_data[[var]])) > 0) {
+  # Verificar suficientes datos no NA y variabilidad
+  var_values <- train_data[[var]]
+  if(sum(!is.na(var_values)) > 30 && sd(var_values, na.rm = TRUE) > 0.001) {
     corr_value <- tryCatch({
-      cor(train_data[[var]], pobre_numeric, use = "pairwise.complete.obs")
+      cor(var_values, pobre_numeric, use = "pairwise.complete.obs")
     }, error = function(e) NA)
     
     if (!is.na(corr_value)) {
@@ -655,10 +798,10 @@ for (var in numeric_vars) {
 }
 
 # Ordenar por valor absoluto de correlación
-numerical_target_corr <- numerical_target_corr[order(-abs(numerical_target_corr$correlacion_con_pobreza)), ]
-
-# Visualizar top 15 variables correlacionadas con pobreza
-if (nrow(numerical_target_corr) > 0) {
+if(nrow(numerical_target_corr) > 0) {
+  numerical_target_corr <- numerical_target_corr[order(-abs(numerical_target_corr$correlacion_con_pobreza)), ]
+  
+  # Visualizar top 15 variables correlacionadas con pobreza
   top_corr <- head(numerical_target_corr, 15)
   
   # Crear gráfico
@@ -711,7 +854,7 @@ if (length(high_missing_vars) > 0) {
 }
 
 # Variables con alta proporción de outliers (>20%)
-if (exists("outlier_analysis")) {
+if (exists("outlier_analysis") && nrow(outlier_analysis) > 0) {
   high_outlier_vars <- outlier_analysis$variable[outlier_analysis$pct_outliers > 20]
   if (length(high_outlier_vars) > 0) {
     variables_eliminar <- rbind(variables_eliminar, data.frame(
@@ -803,12 +946,12 @@ recomendaciones <- data.frame(
                 "Transformación de variables",
                 "Selección de variables"),
   recomendacion = c(
-    paste0("Usar técnicas como SMOTE o ponderación de clases. Ratio de desbalance: ", 
+    paste0("Usar técnicas como SMOTE o ponderación de clases en el script 04. Ratio de desbalance: ", 
            round(imbalance_ratio, 2), ":1"),
-    "Imputar con mediana para variables numéricas y moda para categóricas",
-    "Considerar winsorización para las variables con >5% de outliers",
-    "Transformación logarítmica para variables con distribución sesgada",
-    paste0("Mantener variables con mayor correlación con pobreza y eliminar variables redundantes")
+    "Imputar con mediana para variables numéricas y moda para categóricas en el script 03",
+    "Considerar winsorización para las variables con >5% de outliers en el script 03",
+    "Transformación logarítmica para variables con distribución sesgada en el script 03",
+    paste0("Mantener variables con mayor correlación con pobreza y eliminar variables redundantes en el script 03")
   )
 )
 

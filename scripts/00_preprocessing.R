@@ -536,6 +536,66 @@ missing_comparacion <- missing_comparacion %>%
 # Guardar comparación de missing values
 write.csv(missing_comparacion, "views/tables/missing_comparacion_personas.csv", row.names = FALSE)
 
+########################################################
+# 7.1 COMPARACIÓN DE MISSING VALUES ENTRE TRAIN Y TEST #
+########################################################
+
+cat("\nComparando patrones de missing values entre conjuntos de entrenamiento y prueba...\n")
+
+# Comparar missing values entre train_hogares y test_hogares
+cat("Comparando missing values en bases de hogares (train vs test)...\n")
+
+# Usar las variables comunes ya identificadas en la sección 2
+missing_comparacion_hogares <- data.frame(
+  variable = vars_comunes_hogares,
+  missing_train = sapply(train_hogares[vars_comunes_hogares], function(x) sum(is.na(x))),
+  pct_missing_train = sapply(train_hogares[vars_comunes_hogares], 
+                             function(x) round(sum(is.na(x))/nrow(train_hogares)*100, 2)),
+  missing_test = sapply(test_hogares[vars_comunes_hogares], function(x) sum(is.na(x))),
+  pct_missing_test = sapply(test_hogares[vars_comunes_hogares], 
+                            function(x) round(sum(is.na(x))/nrow(test_hogares)*100, 2)),
+  stringsAsFactors = FALSE
+)
+
+# Calcular diferencia en porcentaje de missing values
+missing_comparacion_hogares <- missing_comparacion_hogares %>%
+  mutate(
+    diff_pct = pct_missing_train - pct_missing_test
+  ) %>%
+  arrange(desc(abs(diff_pct)))
+
+# Guardar comparación completa
+write.csv(missing_comparacion_hogares, "views/tables/missing_comparacion_hogares_train_test.csv", row.names = FALSE)
+
+# Comparar missing values entre train_personas y test_personas
+cat("\nComparando missing values en bases de personas (train vs test)...\n")
+
+# Usar las variables comunes ya identificadas en la sección 2
+missing_comparacion_personas <- data.frame(
+  variable = vars_comunes_personas,
+  missing_train = sapply(train_personas[vars_comunes_personas], function(x) sum(is.na(x))),
+  pct_missing_train = sapply(train_personas[vars_comunes_personas], 
+                             function(x) round(sum(is.na(x))/nrow(train_personas)*100, 2)),
+  missing_test = sapply(test_personas[vars_comunes_personas], function(x) sum(is.na(x))),
+  pct_missing_test = sapply(test_personas[vars_comunes_personas], 
+                            function(x) round(sum(is.na(x))/nrow(test_personas)*100, 2)),
+  stringsAsFactors = FALSE
+)
+
+# Calcular diferencia en porcentaje de missing values
+missing_comparacion_personas <- missing_comparacion_personas %>%
+  mutate(
+    diff_pct = pct_missing_train - pct_missing_test
+  ) %>%
+  arrange(desc(abs(diff_pct)))
+
+# Guardar comparación completa
+write.csv(missing_comparacion_personas, "views/tables/missing_comparacion_personas_train_test.csv", row.names = FALSE)
+
+cat("\nComparación de missing values entre train y test completada.\n")
+cat("Los resultados detallados se guardaron en 'views/tables/missing_comparacion_hogares_train_test.csv' y\n")
+cat("'views/tables/missing_comparacion_personas_train_test.csv'.\n")
+
 ###########################################
 # 8. AGRUPACIÓN DE CATEGORÍAS DE OFICIO  #
 ###########################################
