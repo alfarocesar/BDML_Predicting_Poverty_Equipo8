@@ -29,7 +29,7 @@
 \usepackage{units}
 \usepackage{placeins}
 \usepackage{booktabs,multirow}
-\usepackage{booktabs} % Para tablas mejoradas
+\usepackage{float}
 
 % Bibliografía
 \usepackage{natbib}
@@ -318,6 +318,20 @@ Análisis de las características más relevantes en la predicción.
 
 \section{Conclusión}
 Resumen de los hallazgos principales y posibles mejoras futuras.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ANEXOS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+\section*{Anexos}
+\addcontentsline{toc}{section}{Anexos}
+
+\section{Resumen de hogares por departamento}
+\input{../views/tables/missing_by_poverty.tex}
+
+\section{Resumen de variables con valores faltantes}
+%\input{../views/tables/valores_faltantes.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TERMINA EL CONTENIDO
