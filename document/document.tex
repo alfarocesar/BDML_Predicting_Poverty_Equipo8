@@ -304,14 +304,91 @@ Exploración de la variabilidad de los datos con tablas y gráficos.
 %\input{../views/tables/analisis_categoricas_pobreza.tex}
 
 \section{Modelos y Resultados}
-\subsection{Metodología}
-Descripción de los algoritmos utilizados: Regresión Logística, Random Forest, etc.
+\section{Modelos y Resultados}
+\subsection{Modelo de Selección y Entrenamiento}
 
-\subsection{Entrenamiento y validación de modelos}
-Explicación del proceso de entrenamiento y evaluación.
+\subsubsection{Metodología}
 
-\subsection{Comparación de modelos}
-Tabla comparativa con métricas de desempeño.
+\paragraph{1. Regresión Logística}
+
+Esta primera metodología estima la probabilidad de que una observación pertenezca a una clase (por ejemplo, "pobre" como en este caso) en función de una combinación lineal de las variables independientes. Esta combinación se transforma usando la función de distribución de probabilidad logística, lo que garantiza que los valores estimados estén entre 0 y 1. Aunque no tiene muchos hiperparámetros, en este trabajo se utilizó la metodología de validación cruzada para ajustar el umbral de clasificación (por ejemplo, elegir si se clasifica como "pobre" cuando la probabilidad es mayor a 0.5 o a otro valor), además de evaluar su capacidad predictiva comparado con modelos más complejos. La forma funcional básico de dicho modelo es:
+
+$$P\left( y = 1 \middle| X \right) = \frac{1}{1 + e^{- (\beta_{0} + \beta_{1 + \ldots + \beta_{k}})}}$$
+
+\paragraph{2. Elastic Net}
+
+Este modelo es una variante penalizada de la regresión logística que incluye regularización mediante una combinación de Lasso (penalización L1) y Ridge (penalización L2). Es útil cuando hay muchas variables correlacionadas o cuando se busca reducir el número de variables relevantes. Los hiperparámetros clave son lambda (intensidad de la penalización) y alpha (mezcla entre L1 y L2). Ambos se seleccionaron con validación cruzada, evaluando el rendimiento del modelo en diferentes combinaciones para elegir la más adecuada. La forma funcional de este modelo es:
+
+$$LOSS = - \log(\beta) + \rho( \propto \sum_{}^{}\left| \beta_{j} \right| + (1 - \propto )\sum_{}^{}\beta_{j}^{2})$$
+
+\paragraph{3. Árboles de Clasificación (CART)}
+
+Este método construye un árbol de decisión dividiendo el conjunto de datos en subconjuntos más homogéneos según los valores de las variables. En cada nodo, el esta metodologia selecciona la variable y el punto de corte que maximizan la separación entre clases. Aunque es muy fácil de interpretar, un solo árbol puede sobreajustarse a los datos si es muy profundo o si se permite dividir con pocos datos. Por eso, se utilizó validación cruzada para determinar la profundidad óptima del árbol, el número mínimo de observaciones por nodo y el parámetro de complejidad que regula la poda del árbol.
+
+\paragraph{4. GBM (Gradient Boosting Machines)}
+
+GBM (Gradient Boosting Machines) es una técnica avanzada de Boosting utilizada para mejorar la precisión de los modelos predictivos, especialmente en problemas de clasificación y regresión. A diferencia de los métodos tradicionales de Boosting, GBM utiliza el gradiente descendente para minimizar la función de error, lo que permite que el modelo ajuste las predicciones de manera más eficiente.
+
+\paragraph{5. Naive Bayes}
+
+Naive Bayes es un clasificador probabilístico basado en el teorema de Bayes, que asume independencia condicional entre las variables predictoras. Aunque esta suposición es bastante fuerte, el modelo suele funcionar sorprendentemente bien en la práctica, especialmente cuando las variables tienen efectos independientes. No requiere un ajuste intensivo de hiperparámetros, pero aun así se utilizó validación cruzada para evaluar su desempeño y compararlo con los otros modelos. Para calcular dichas probabilidades de pertenecer a una clase u otra se utiliza la siguiente formula:
+
+$$P\left( Y \middle| X_{1},X_{2},\ldots,X_{k} \right) = P(Y)\prod_{}^{}{P(X_{J}|Y)}$$
+
+Donde esto es posible dado el supuesto de independencias de las variables.
+
+\subsubsection{Variables utilizadas}
+A continuación se presentan las principales variables utilizadas en los modelos:
+
+{\color{blue} Tabla 1: Variables utilizadas en los modelos}
+
+\subsection{Resultados}
+
+Acontinuación se presentan los principales resultados con las metodologías anteriormente explicas, cabe resaltar que al ser una muestra de la población presenta un desbalance entre clases, pero afortunamente los mismos micrdatos ayudan a resolver esto mediante un factor de expansión que no es mas que pesos muestrales que ayudan a corregir este problema.
+
+Los resultados de la tabla 1 corresponden a las estimaciones del modelo Logit, los resultados muestran que variables como el hacinamiento, pertenecer al régimen subsidiado de salud y trabajar en empresas pequeñas están asociadas positivamente con la probabilidad de ser pobre, mientras que contar con educación, estar trabajando, cotizar a pensión y ser pensionado reducen significativamente dicha probabilidad. Por ejemplo, cotizar a pensión o tener mayor nivel educativo parece ser un factor protector frente a la pobreza, mientras que vivir en condiciones de hacinamiento o depender de subsidios refleja situaciones de vulnerabilidad estos resultados hay que interpretarlos de manera cuidadosa ya que no necesariamente representan una relación causal. Algunos coeficientes presentan magnitudes muy elevadas (como los de TGP o CotizaPension), lo cual puede estar relacionado con problemas de escalamiento o multicolinealidad, especialmente dado el tamaño de la muestra. A pesar de ello, la mayoría de las variables son altamente significativas y la reducción en la varianza residual sugiere que el modelo tiene un buen ajuste en comparación con uno sin predictores.
+
+{\color{blue} Tabla 2: Estimaciones mediante metodología LOGIT}
+
+Los resultados de la tabla 2 corresponde a la metodología CARTs, resultados muestran que, en promedio, el modelo alcanzó una precisión del 81.5\% con una desviación estándar baja (0.17\%), lo que sugiere que el modelo es bastante estable entre las diferentes particiones de la muestra. El coeficiente Kappa, que mide la concordancia ajustada por azar, tuvo un valor medio de 0.47, lo cual indica un nivel de acierto moderado entre las predicciones del modelo y la realidad. A pesar de que los valores máximos de precisión alcanzaron hasta 83.4\% y el Kappa llegó a 0.54, los valores mínimos fueron cercanos al 81.2\% y 0.46, lo que sugiere que el modelo no presenta grandes variaciones entre distintas configuraciones que dicha metodología contempló. Estos resultados indican que el árbol de decisión logró capturar patrones relevantes para predecir la pobreza con un buen nivel de precisión.. Una aclaración importe es que este fue el único modelo que se estimo con todas las variables, el resto fueron estimados siguiendo otra especificación (Pobre \~ hacinamiento + r\_gast+ hacinamiento\_c + TGP +educ\_cab +trabajando +CotizaPension + Subsidiado + Pequena + Subsidios + CotizaPension + Pensionado + Ingresos\_AlquilerPensiones + OtrosIngresos) esto debido a que no todas las variables aportaban poder explicativo.
+
+{\color{blue} Tabla 3: Estimación 1 metodología CARTs}
+
+La tabla 3 representa otra estimación bajo metodología CARTS pero con otra especificación, también ajustado mediante validación cruzada, presenta resultados consistentes en cuanto a precisión y estabilidad. El valor promedio de precisión (Accuracy) fue de 81.2\%, con una desviación estándar baja (0.24\%), lo que indica que el modelo mantiene un rendimiento estable al aplicarse sobre distintas particiones de la muestra. El coeficiente de Kappa promedio fue de 0.46, lo cual representa un acuerdo moderado entre las predicciones del modelo y la clasificación real al igual que la especificación anterior. Aunque los valores máximos de precisión y Kappa alcanzaron 82.5\% y 0.50 respectivamente, los mínimos estuvieron en torno al 80.9\% y 0.45, lo que muestra que el rendimiento es bastante homogéneo a lo largo de los diferentes valores del hiperparámetro cp. En general, estos resultados refuerzan que el árbol de decisión logra capturar patrones relevantes para identificar condiciones de pobreza, aunque no presento grandes diferencias ante el cambio deespecificación.
+
+{\color{blue} Tabla 4: Estimación 2 metodología CARTs}
+
+La tabla 5 por su parte utilizo la metodología de Elastic Net. Los resultados muestran una variabilidad en los valores de precisión (Accuracy) y Kappa en función de los hiperparámetros alpha y lambda. En promedio, la precisión del modelo fue de 80.45\%, con una desviación estándar de 0.12\%, lo que sugiere que el rendimiento del modelo es relativamente consistente a través de las diferentes particiones de la muestra. A lo largo del rango de alpha (que varió de 0.10 a 1.00) y lambda (desde 0.00017 hasta 0.13491), la precisión mostró poca variación, manteniéndose cercana al 81\% en los percentiles 1,2 y 3, lo que indica un buen ajuste del modelo. La tendencia en la precisión y el Kappa sugiere que la regularización aplicada por Elastic Net ayudó a controlar el sobreajuste sin perder mucho rendimiento, lo cual es positivo para problemas de alta dimensionalidad o multicolinealidad. En resumen, el modelo Elastic Net ofrece un buen balance entre precisión y estabilidad, con una capacidad moderada de clasificación, que es acorde a la magnitud de las variables involucradas.
+
+{\color{blue} Tabla 5: Estimaciones por Elastic Net}
+
+La tabla 6 presenta los resultados del modelo ajustado por la metodología de Naive Bayes que fue ajustado con los hiperparámetros alpha y lambda. Los resultados indican que, en promedio, el modelo alcanzó una precisión (Accuracy) de 80.45\%, con una desviación estándar de 0.12\%, lo que indica una precisión bastante estable entre las particiones de la muestra. El coeficiente Kappa promedio fue de 0.38, la precisión se mantuvo relativamente constante, alcanzando un máximo de 81.31\% y un Kappa de 0.45. Los valores de precisión en el primer y tercer cuartil se mantienen alrededor de 80.7\% y 81.3\%, lo que sugiere que el modelo es robusto y no presenta grandes variaciones al ajustar los hiperparámetros. En cuanto a la desviación estándar de precisión, los valores son bajos, lo que refleja la estabilidad del modelo a través de las particiones de la muestra. En resumen, el modelo Naive Bayes parece ser efectivo para este conjunto de datos, logrando una buena precisión con una moderada capacidad de discriminación, y su rendimiento se mantiene estable a pesar de la variación en los hiperparámetros.
+
+{\color{blue} Tabla 6: Estimaciones por Naive Bayes}
+
+La tabla 7 muestra las estimaciones del modelo mediante boosting, con los hiperparámetros shrinkage, interaction.depth, minobsinnode, y n.trees. Los resultados muestran una variabilidad en la precisión (Accuracy) y el coeficiente Kappa en función de los valores de los hiperparámetros. La precisión promedio fue de 78.86\%, con una desviación estándar baja (0.11\%). Al analizar los percentiles, la precisión alcanzó un máximo de 82.33\%, con un Kappa de 0.49 en el cuartil superior, lo que muestra que con valores de shrinkage y interaction.depth más altos, el modelo logra una mayor capacidad discriminativa. Por otro lado, los valores mínimos de precisión y Kappa fueron bastante bajos (74.86\% y 0.00, respectivamente), lo que refleja que con configuraciones subóptimas de los hiperparámetros, el modelo no logró un buen rendimiento. La mediana de precisión fue de 79.72\%, lo que indica que el modelo con una configuración intermedia de hiperparámetros proporciona un rendimiento razonablemente bueno y estable. Además, la desviación estándar de la precisión fue muy baja (cerca de 0.0004), lo que refuerza la estabilidad del modelo. En resumen, el modelo ajustado por boosting parece ser bastante efectivo, logrando buenos niveles de precisión y Kappa, especialmente con configuraciones más altas en los hiperparámetros shrinkage e interaction.depth, lo cual podría indicar que el modelo está aprovechando mejor las interacciones no lineales entre las variables.
+
+{\color{blue} Tabla 7: Estimaciones por GBM}
+
+\subsection{Matrices de Confusión}
+
+A continuación, se presentan las matrices de confusión para los diferentes modelos evaluados:
+
+{\color{blue} Tabla 8: Matriz de confusión - Modelo CART 1}
+
+{\color{blue} Tabla 9: Matriz de confusión - Modelo CART 2}
+
+{\color{blue} Tabla 10: Matriz de confusión - Modelo Elastic Net}
+
+{\color{blue} Tabla 11: Matriz de confusión - Modelo Logit}
+
+{\color{blue} Tabla 12: Matriz de confusión - Modelo Naive Bayes}
+
+{\color{blue} Tabla 13: Matriz de confusión - Modelo GBM}
+
+\subsection{Importancia de Variables}
+
+[Esta sección queda pendiente para incluir un análisis de la importancia relativa de las variables en los modelos]
 
 \subsection{Importancia de variables}
 Análisis de las características más relevantes en la predicción.

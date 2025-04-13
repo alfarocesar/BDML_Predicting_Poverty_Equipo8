@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2025.2.23)  13 APR 2025 11:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2025.2.23)  13 APR 2025 17:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -648,7 +648,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [1
 
 {/Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<../views/figures/pobreza_colombia.png, id=116, 736.7525pt x 376.40625pt>
+<../views/figures/pobreza_colombia.png, id=132, 736.7525pt x 376.40625pt>
 File: ../views/figures/pobreza_colombia.png Graphic file (type png)
 <use ../views/figures/pobreza_colombia.png>
 Package pdftex.def Info: ../views/figures/pobreza_colombia.png  used on input line 123.
@@ -689,18 +689,26 @@ Overfull \hbox (38.12146pt too wide) in paragraph at lines 286--287
 
 
 
-[8] (../views/tables/missing_by_poverty.tex)
+[8]
 
 [9]
+
+[10]
+
+[11]
+
+[12] (../views/tables/missing_by_poverty.tex)
+
+[13]
 Overfull \vbox (22.31465pt too high) has occurred while \output is active []
 
 
 
-[10]
+[14]
 
-[11] (./document.bbl)
+[15] (./document.bbl)
 
-[12] (./document.aux
+[16] (./document.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
 )
@@ -709,21 +717,21 @@ LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `document.out' has not changed.
-(rerunfilecheck)             Checksum: 69592E6ADC999745B2C335FE36227E86;5407.
+(rerunfilecheck)             Checksum: 301BEC1DDBAFBDDC6ADDFA57828B5DAA;6015.
  ) 
 Here is how much of TeX's memory you used:
- 16195 strings out of 475113
- 259803 string characters out of 5762667
+ 16217 strings out of 475113
+ 260118 string characters out of 5762667
  694981 words of memory out of 5000000
- 38914 multiletter control sequences out of 15000+600000
+ 38923 multiletter control sequences out of 15000+600000
  572964 words of font info for 67 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 75i,9n,79p,834b,584s stack positions out of 10000i,1000n,20000p,200000b,200000s
- </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0600.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1728.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1440.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600pk></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on document.pdf (12 pages, 286485 bytes).
+ 75i,9n,79p,1530b,584s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0600.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1728.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1440.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600pk></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on document.pdf (16 pages, 364052 bytes).
 PDF statistics:
- 568 PDF objects out of 1000 (max. 8388607)
- 218 compressed objects within 3 object streams
- 52 named destinations out of 1000 (max. 500000)
- 198 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 653 PDF objects out of 1000 (max. 8388607)
+ 275 compressed objects within 3 object streams
+ 65 named destinations out of 1000 (max. 500000)
+ 230 words of extra memory for PDF output out of 10000 (max. 10000000)
 
