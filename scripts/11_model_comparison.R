@@ -1,25 +1,32 @@
-#install.packages("MLmetrics")
-require(MLmetrics)
+# Cargar librería yardstick (mejor integrada con caret/tidyverse)
+if (!require("yardstick")) install.packages("yardstick")
+library(yardstick)
 
-# Ver resultados
+# Ver resultados de todos los modelos
 resamples(modelos) %>% summary()
 
-
-# Elegir el modelo con mejor F1
+# Identificar mejor modelo según F1-score
 f1_scores <- sapply(modelos, function(m) max(m$results$F, na.rm = TRUE))
 mejor_modelo <- modelos[[which.max(f1_scores)]]
+cat("Mejor modelo:", names(modelos)[which.max(f1_scores)], "\n")
 
-#Obtener las predicciones cruzadas
+# Obtener predicciones cruzadas
 preds_bestmodel <- mejor_modelo$pred
 
-best_params <- mejor_modelo$bestTune
-preds_bestmodel <- preds_bestmodel %>%
-  dplyr::filter(alpha == best_params$alpha, lambda == best_params$lambda)
+# Filtrar por los mejores hiperparámetros si existen
+if (!is.null(mejor_modelo$bestTune)) {
+  cols_best <- names(mejor_modelo$bestTune)
+  for (param in cols_best) {
+    preds_bestmodel <- preds_bestmodel %>%
+      filter(!!sym(param) == mejor_modelo$bestTune[[param]])
+  }
+}
 
-#Calcular f1
-f1_best <- F1_Score(y_true = preds_bestmodel$obs,
-                    y_pred = preds_bestmodel$pred,
-                    positive = "Yes"
-                    )
+# Calcular F1 usando yardstick
+f1_best <- preds_bestmodel %>%
+  mutate(obs = factor(obs, levels = c("No", "Yes")),
+         pred = factor(pred, levels = c("No", "Yes"))) %>%
+  f_meas(truth = obs, estimate = pred) %>%
+  pull(.estimate)
 
-cat("F1-Best Model :", round(f1_best,4), "\n")
+cat("F1-score del mejor modelo:", round(f1_best, 4), "\n")
