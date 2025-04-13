@@ -6,7 +6,6 @@
 # Configurar directorio de trabajo automáticamente
 if (!require(rstudioapi)) install.packages("rstudioapi")
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-# Subir un nivel directorio para acceder a la estructura principal del proyecto
 setwd("../")
 
 # Cargar librerías
@@ -17,8 +16,8 @@ pacman::p_load(
   skimr         # Resumen de datos
 )
 
-# Fijar semilla
-set.seed(123)
+# Fijar semilla unificada
+set.seed(1051)
 
 # ------------------------------------------------------------------------------
 # 1. CARGAR BASE
@@ -52,15 +51,25 @@ importancia_df <- data.frame(variable = rownames(importancia),
                              importancia = importancia[, "MeanDecreaseGini"]) %>%
   arrange(desc(importancia))
 
-# Mostrar top 20 en consola
 print(head(importancia_df, 20))
 
-# Crear carpeta si no existe
-if (!dir.exists("views/tables")) {
-  dir.create("views/tables", recursive = TRUE)
-}
+# Crear carpetas
+if (!dir.exists("views/tables")) dir.create("views/tables", recursive = TRUE)
+if (!dir.exists("views/figures")) dir.create("views/figures", recursive = TRUE)
 
 # Guardar lista completa
 write.csv(importancia_df, "views/tables/rf_variable_importance.csv", row.names = FALSE)
 
-cat("Importancia de variables guardada en views/tables/rf_variable_importance.csv\n")
+# ------------------------------------------------------------------------------
+# 4. VISUALIZACIÓN DE RESULTADOS
+# ------------------------------------------------------------------------------
+top_vars <- head(importancia_df, 20)
+ggplot(top_vars, aes(x = reorder(variable, importancia), y = importancia)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(title = "Top 20 Variables por Importancia (Random Forest)",
+       x = "Variable", y = "Importancia (MeanDecreaseGini)") +
+  theme_minimal() +
+  ggsave("views/figures/rf_variable_importance.png", width = 8, height = 6)
+
+cat("Importancia de variables guardada en:\n - CSV: views/tables/rf_variable_importance.csv\n - PNG: views/figures/rf_variable_importance.png\n")
