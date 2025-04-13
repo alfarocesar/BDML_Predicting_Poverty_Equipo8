@@ -19,7 +19,7 @@ pacman::p_load(
 )
 
 # Fijar semilla
-set.seed(123)
+set.seed(1051)
 
 # ------------------------------------------------------------------------------
 # 1. CARGAR DATOS
@@ -57,7 +57,8 @@ modelo_logit <- glm(Pobre ~ ., data = cbind(Pobre = y_train, X_train), family = 
 # ------------------------------------------------------------------------------
 pred_train <- predict(modelo_logit, type = "response")
 pred_train_class <- ifelse(pred_train > 0.5, 1, 0)
-f1 <- f_meas_vec(truth = y_train, estimate = as.factor(pred_train_class), estimator = "binary")
+f1 <- f_meas_vec(truth = y_train, estimate = as.factor(pred_train_class), 
+                 estimator = "binary", event_level = "second")
 cat("F1-score sobre datos de entrenamiento:", round(f1, 4), "\n")
 
 # ------------------------------------------------------------------------------
