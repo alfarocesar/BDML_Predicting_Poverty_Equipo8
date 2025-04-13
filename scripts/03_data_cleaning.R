@@ -83,3 +83,67 @@ imputar_NA <- function(df) {
 # Imputación
 train_personas <- imputar_NA(train_personas)
 test_personas <- imputar_NA(test_personas)
+
+train_personas_nivel_hogar<- train_personas %>% 
+  group_by(id) %>% 
+  summarize(nmujeres=sum(mujer,na.rm=TRUE),
+            nmenores=sum(menor,na.rm=TRUE),
+            maxEducLevel=max(EducLevel,na.rm=TRUE),
+            nocupados=sum(ocupado,na.rm=TRUE)
+  )
+
+train_personas_hogar<- train_personas %>% 
+  filter(H_Head==1) %>% 
+  rename(H_Head_mujer=mujer,
+         H_Head_Educ_level=EducLevel,
+         H_Head_ocupado=ocupado) %>% 
+  left_join(train_personas_nivel_hogar)
+
+
+test_personas_nivel_hogar<- test_personas %>% 
+  group_by(id) %>% 
+  summarize(nmujeres=sum(mujer,na.rm=TRUE),
+            nmenores=sum(menor,na.rm=TRUE),
+            maxEducLevel=max(EducLevel,na.rm=TRUE),
+            nocupados=sum(ocupado,na.rm=TRUE)
+  )
+
+test_personas_hogar<- test_personas %>% 
+  filter(H_Head==1) %>% 
+  rename(H_Head_mujer=mujer,
+         H_Head_Educ_level=EducLevel,
+         H_Head_ocupado=ocupado) %>% 
+  left_join(test_personas_nivel_hogar)
+
+
+train_hogares<- train_hogares %>% 
+  mutate(arrienda=ifelse(P5090==3,1,0)) %>% 
+  select(id,Dominio,arrienda,Pobre)
+
+
+test_hogares<- test_hogares %>% 
+  mutate(arrienda=ifelse(P5090==3,1,0)) %>% 
+  select(id,Dominio,arrienda) 
+
+train<- train_hogares %>% 
+  left_join(train_personas_hogar) %>% 
+  select(-id) #no longer need id
+
+test<- test_hogares %>% 
+  left_join(test_personas_hogar)
+
+
+train<- train %>% 
+  mutate(Pobre=factor(Pobre,levels=c(0,1),labels=c("No","Yes")))
+         
+train<- train %>% 
+  mutate(Dominio=factor(Dominio),
+  H_Head_Educ_level=factor(H_Head_Educ_level,levels=c(0:6), labels=c("Ns",'Ninguno', 'Preescolar','Primaria', 'Secundaria','Media', 'Universitaria')),
+  maxEducLevel=factor(maxEducLevel,levels=c(0:6), labels=c("Ns",'Ninguno', 'Preescolar','Primaria', 'Secundaria','Media', 'Universitaria'))
+  )
+
+test<- test %>% 
+  mutate(Dominio=factor(Dominio),
+         H_Head_Educ_level=factor(H_Head_Educ_level,levels=c(0:6), labels=c("Ns",'Ninguno', 'Preescolar','Primaria', 'Secundaria','Media', 'Universitaria')),
+         maxEducLevel=factor(maxEducLevel,levels=c(0:6), labels=c("Ns",'Ninguno', 'Preescolar','Primaria', 'Secundaria','Media', 'Universitaria'))
+  )
