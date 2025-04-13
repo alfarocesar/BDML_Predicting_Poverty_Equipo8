@@ -111,7 +111,23 @@ Este documento presenta el análisis de datos y la implementación de modelos de
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Introducción}
-Breve descripción del problema, antecedentes y motivación del estudio.
+
+La pobreza continúa siendo una de las principales barreras para el desarrollo económico y social en Colombia. A pesar de los avances logrados en las últimas décadas, persisten marcadas desigualdades territoriales, sociales y económicas que afectan especialmente a zonas rurales, hogares con jefatura femenina, y comunidades indígenas y afrodescendientes \citep{bm2024}.
+
+Una medición precisa, eficiente y oportuna de la pobreza es clave para diseñar políticas públicas que sean no solo efectivas, sino también costo-eficientes. Sin embargo, los métodos tradicionales de medición —basados en encuestas extensas— implican altos costos y tiempos prolongados de recolección, procesamiento y análisis. En respuesta a esta limitación, el uso de técnicas de \textit{machine learning} ofrece una alternativa prometedora: construir modelos que permitan predecir la condición de pobreza de los hogares utilizando un número reducido de variables y, en consecuencia, realizar evaluaciones más rápidas y baratas.
+
+Este proyecto busca desarrollar modelos de clasificación binaria que permitan identificar si un hogar colombiano se encuentra en condición de pobreza, utilizando microdatos del DANE y la Misión MESE, a nivel de hogar e individuo. La Figura~\ref{fig:pobreza_colombia} ilustra la evolución reciente de la pobreza en el país, motivando así la necesidad de mejorar las herramientas de diagnóstico.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{../views/figures/pobreza_colombia.png}
+  \caption{Evolución reciente de la pobreza monetaria en Colombia.}
+  \label{fig:pobreza_colombia}
+\end{figure}
+
+A lo largo del documento se evalúan diferentes algoritmos de clasificación (como regresión logística, árboles de decisión, random forest, entre otros) y se presenta una comparación sistemática de su desempeño. El modelo con mejor rendimiento logró una puntuación F1 de \textbf{[valor]}, utilizando solo \textbf{[número]} variables, lo que representa un avance en términos de precisión y simplicidad. Este modelo fue seleccionado como la base para las predicciones entregadas en Kaggle.
+
+Además de identificar el mejor algoritmo, se discute la importancia relativa de las variables predictoras, destacando aquellas con mayor capacidad explicativa. Estos hallazgos permiten no solo mejorar la focalización de políticas sociales, sino también abrir camino para sistemas de monitoreo más ágiles y adaptativos.
 
 \section{Datos}
 \subsection{Adecuación de los datos}
