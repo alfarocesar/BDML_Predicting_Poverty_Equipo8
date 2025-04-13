@@ -20,7 +20,7 @@ pacman::p_load(
 )
 
 # Fijar semilla
-set.seed(123)
+set.seed(1051)
 
 ###########################################
 # 1. CARGAR Y EXPLORAR BASES DE DATOS    #
