@@ -30,6 +30,11 @@
 \usepackage{placeins}
 \usepackage{booktabs,multirow}
 \usepackage{float}
+\usepackage{pdflscape}      % Para landscape completo
+\usepackage{lscape}         % Alternativa si pdflscape da problemas
+\usepackage{longtable}      % Para tablas que ocupan más de una página
+\usepackage{geometry}       % Para ajustar márgenes si es necesario
+
 
 % Bibliografía
 \usepackage{natbib}
@@ -291,18 +296,6 @@ Este conjunto final de variables balanceó el poder predictivo, la disponibilida
 \subsection{Análisis descriptivo}
 Exploración de la variabilidad de los datos con tablas y gráficos.
 
-% Este es un ejemplo de como incorporar las gráficas en el documento
-%\begin{figure}[htbp]
-%    \centering
-%    \includegraphics[width=0.8\textwidth]{../views/figures/poverty_distribution.png}
-%    \caption{Distribución de la pobreza}
-%    \label{fig:distribución_pobreza}
-%\end{figure}
-
-% Este es un ejemplo de como incorporar tablas en el documento
-%\input{../views/tables/descriptive_statistics.tex}
-%\input{../views/tables/analisis_categoricas_pobreza.tex}
-
 \section{Modelos y Resultados}
 \section{Modelos y Resultados}
 \subsection{Modelo de Selección y Entrenamiento}
@@ -400,15 +393,55 @@ Resumen de los hallazgos principales y posibles mejoras futuras.
 % ANEXOS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\clearpage
 \appendix
 \section*{Anexos}
 \addcontentsline{toc}{section}{Anexos}
 
-\section{Resumen de hogares por departamento}
-\input{../views/tables/missing_by_poverty.tex}
+\section{Estadísticas descriptivas de variables continuas}
+\input{../views/tables/01_descriptiva_personas_continua.tex}
 
-\section{Resumen de variables con valores faltantes}
-%\input{../views/tables/valores_faltantes.tex}
+\section{Estadísticas descriptivas de variables discretas}
+\input{../views/tables/02_descriptiva_personas_discreta.tex}
+
+\section{Variables utilizadas en los modelos}
+\input{../views/tables/03_variables_modelos.tex}
+
+\section{Estimaciones mediante metodología LOGIT}
+\input{../views/tables/04_tabla_logit.tex}
+
+\section{Estimación 1 metodología CARTs}
+\input{../views/tables/05_tabla_1_cart.tex}
+
+\section{Estimación 2 metodología CARTs}
+\input{../views/tables/06_tabla_2_cart.tex}
+
+\section{Estimaciones por Elastic Net}
+\input{../views/tables/07_tabla_elastic_net.tex}
+
+\section{Estimaciones por Naive Bayes}
+\input{../views/tables/08_tabla_naive_bayes.tex}
+
+\section{Estimaciones por GBM}
+\input{../views/tables/09_tabla_gbm.tex}
+
+\section{Matriz de confusión - Modelo CART 1}
+\input{../views/tables/10_matriz_1_cart.tex}
+
+\section{Matriz de confusión - Modelo CART 2}
+\input{../views/tables/11_matriz_2_cart.tex}
+
+\section{Matriz de confusión - Modelo Elastic Net}
+\input{../views/tables/12_matriz_elastic_net.tex}
+
+\section{Matriz de confusión - Modelo Logit}
+\input{../views/tables/13_matriz_logit.tex}
+
+\section{Matriz de confusión - Modelo Naive Bayes}
+\input{../views/tables/14_matriz_naive_bayes.tex}
+
+\section{Matriz de confusión - Modelo GBM}
+\input{../views/tables/15_matriz_gbm.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TERMINA EL CONTENIDO
@@ -424,3 +457,15 @@ Resumen de los hallazgos principales y posibles mejoras futuras.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TERMINA EL DOCUMENTO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Este es un ejemplo de como incorporar las gráficas en el documento
+%\begin{figure}[htbp]
+%    \centering
+%    \includegraphics[width=0.8\textwidth]{../views/figures/poverty_distribution.png}
+%    \caption{Distribución de la pobreza}
+%    \label{fig:distribución_pobreza}
+%\end{figure}
+
+% Este es un ejemplo de como incorporar tablas en el documento
+%\input{../views/tables/descriptive_statistics.tex}
+
