@@ -35,7 +35,6 @@
 \usepackage{longtable}      % Para tablas que ocupan más de una página
 \usepackage{geometry}       % Para ajustar márgenes si es necesario
 
-
 % Bibliografía
 \usepackage{natbib}
 \bibliographystyle{apalike}
@@ -303,7 +302,7 @@ Este conjunto final de variables balanceó el poder predictivo, la disponibilida
 Exploración de la variabilidad de los datos con tablas y gráficos.
 
 \section{Modelos y Resultados}
-\section{Modelos y Resultados}
+
 \subsection{Modelo de Selección y Entrenamiento}
 
 \subsubsection{Metodología}
@@ -337,60 +336,43 @@ $$P\left( Y \middle| X_{1},X_{2},\ldots,X_{k} \right) = P(Y)\prod_{}^{}{P(X_{J}|
 Donde esto es posible dado el supuesto de independencias de las variables.
 
 \subsubsection{Variables utilizadas}
-A continuación se presentan las principales variables utilizadas en los modelos:
-
-{\color{blue} Tabla 1: Variables utilizadas en los modelos}
+A continuación se presentan las principales variables utilizadas en los modelos, como se puede observar en la Tabla \ref{tab:03_variables_modelos} del Anexo 3.
 
 \subsection{Resultados}
 
-Acontinuación se presentan los principales resultados con las metodologías anteriormente explicas, cabe resaltar que al ser una muestra de la población presenta un desbalance entre clases, pero afortunamente los mismos micrdatos ayudan a resolver esto mediante un factor de expansión que no es mas que pesos muestrales que ayudan a corregir este problema.
+A continuación se presentan los principales resultados con las metodologías anteriormente explicas, cabe resaltar que al ser una muestra de la población presenta un desbalance entre clases, pero afortunamente los mismos microdatos ayudan a resolver esto mediante un factor de expansión que no es mas que pesos muestrales que ayudan a corregir este problema.
 
-Los resultados de la tabla 1 corresponden a las estimaciones del modelo Logit, los resultados muestran que variables como el hacinamiento, pertenecer al régimen subsidiado de salud y trabajar en empresas pequeñas están asociadas positivamente con la probabilidad de ser pobre, mientras que contar con educación, estar trabajando, cotizar a pensión y ser pensionado reducen significativamente dicha probabilidad. Por ejemplo, cotizar a pensión o tener mayor nivel educativo parece ser un factor protector frente a la pobreza, mientras que vivir en condiciones de hacinamiento o depender de subsidios refleja situaciones de vulnerabilidad estos resultados hay que interpretarlos de manera cuidadosa ya que no necesariamente representan una relación causal. Algunos coeficientes presentan magnitudes muy elevadas (como los de TGP o CotizaPension), lo cual puede estar relacionado con problemas de escalamiento o multicolinealidad, especialmente dado el tamaño de la muestra. A pesar de ello, la mayoría de las variables son altamente significativas y la reducción en la varianza residual sugiere que el modelo tiene un buen ajuste en comparación con uno sin predictores.
+Los resultados de la Tabla \ref{tab:04_tabla_logit} del Anexo 4 corresponden a las estimaciones del modelo Logit, los resultados muestran que variables como el hacinamiento, pertenecer al régimen subsidiado de salud y trabajar en empresas pequeñas están asociadas positivamente con la probabilidad de ser pobre, mientras que contar con educación, estar trabajando, cotizar a pensión y ser pensionado reducen significativamente dicha probabilidad. Por ejemplo, cotizar a pensión o tener mayor nivel educativo parece ser un factor protector frente a la pobreza, mientras que vivir en condiciones de hacinamiento o depender de subsidios refleja situaciones de vulnerabilidad estos resultados hay que interpretarlos de manera cuidadosa ya que no necesariamente representan una relación causal. Algunos coeficientes presentan magnitudes muy elevadas (como los de TGP o CotizaPension), lo cual puede estar relacionado con problemas de escalamiento o multicolinealidad, especialmente dado el tamaño de la muestra. A pesar de ello, la mayoría de las variables son altamente significativas y la reducción en la varianza residual sugiere que el modelo tiene un buen ajuste en comparación con uno sin predictores.
 
-{\color{blue} Tabla 2: Estimaciones mediante metodología LOGIT}
+Los resultados de la Tabla \ref{tab:05_tabla_1_cart} del Anexo 5 corresponden a la metodología CARTs, resultados muestran que, en promedio, el modelo alcanzó una precisión del 81.5\% con una desviación estándar baja (0.17\%), lo que sugiere que el modelo es bastante estable entre las diferentes particiones de la muestra. El coeficiente Kappa, que mide la concordancia ajustada por azar, tuvo un valor medio de 0.47, lo cual indica un nivel de acierto moderado entre las predicciones del modelo y la realidad. A pesar de que los valores máximos de precisión alcanzaron hasta 83.4\% y el Kappa llegó a 0.54, los valores mínimos fueron cercanos al 81.2\% y 0.46, lo que sugiere que el modelo no presenta grandes variaciones entre distintas configuraciones que dicha metodología contempló. Estos resultados indican que el árbol de decisión logró capturar patrones relevantes para predecir la pobreza con un buen nivel de precisión.. Una aclaración importe es que este fue el único modelo que se estimo con todas las variables, el resto fueron estimados siguiendo otra especificación (Pobre \~ hacinamiento + r\_gast+ hacinamiento\_c + TGP +educ\_cab +trabajando +CotizaPension + Subsidiado + Pequena + Subsidios + CotizaPension + Pensionado + Ingresos\_AlquilerPensiones + OtrosIngresos) esto debido a que no todas las variables aportaban poder explicativo.
 
-Los resultados de la tabla 2 corresponde a la metodología CARTs, resultados muestran que, en promedio, el modelo alcanzó una precisión del 81.5\% con una desviación estándar baja (0.17\%), lo que sugiere que el modelo es bastante estable entre las diferentes particiones de la muestra. El coeficiente Kappa, que mide la concordancia ajustada por azar, tuvo un valor medio de 0.47, lo cual indica un nivel de acierto moderado entre las predicciones del modelo y la realidad. A pesar de que los valores máximos de precisión alcanzaron hasta 83.4\% y el Kappa llegó a 0.54, los valores mínimos fueron cercanos al 81.2\% y 0.46, lo que sugiere que el modelo no presenta grandes variaciones entre distintas configuraciones que dicha metodología contempló. Estos resultados indican que el árbol de decisión logró capturar patrones relevantes para predecir la pobreza con un buen nivel de precisión.. Una aclaración importe es que este fue el único modelo que se estimo con todas las variables, el resto fueron estimados siguiendo otra especificación (Pobre \~ hacinamiento + r\_gast+ hacinamiento\_c + TGP +educ\_cab +trabajando +CotizaPension + Subsidiado + Pequena + Subsidios + CotizaPension + Pensionado + Ingresos\_AlquilerPensiones + OtrosIngresos) esto debido a que no todas las variables aportaban poder explicativo.
+La Tabla \ref{tab:06_tabla_2_cart} del Anexo 6 representa otra estimación bajo metodología CARTS pero con otra especificación, también ajustado mediante validación cruzada, presenta resultados consistentes en cuanto a precisión y estabilidad. El valor promedio de precisión (Accuracy) fue de 81.2\%, con una desviación estándar baja (0.24\%), lo que indica que el modelo mantiene un rendimiento estable al aplicarse sobre distintas particiones de la muestra. El coeficiente de Kappa promedio fue de 0.46, lo cual representa un acuerdo moderado entre las predicciones del modelo y la clasificación real al igual que la especificación anterior. Aunque los valores máximos de precisión y Kappa alcanzaron 82.5\% y 0.50 respectivamente, los mínimos estuvieron en torno al 80.9\% y 0.45, lo que muestra que el rendimiento es bastante homogéneo a lo largo de los diferentes valores del hiperparámetro cp. En general, estos resultados refuerzan que el árbol de decisión logra capturar patrones relevantes para identificar condiciones de pobreza, aunque no presento grandes diferencias ante el cambio deespecificación.
 
-{\color{blue} Tabla 3: Estimación 1 metodología CARTs}
+La Tabla \ref{tab:07_tabla_elastic_net} del Anexo 7 por su parte utilizó la metodología de Elastic Net. Los resultados muestran una variabilidad en los valores de precisión (Accuracy) y Kappa en función de los hiperparámetros alpha y lambda. En promedio, la precisión del modelo fue de 80.45\%, con una desviación estándar de 0.12\%, lo que sugiere que el rendimiento del modelo es relativamente consistente a través de las diferentes particiones de la muestra. A lo largo del rango de alpha (que varió de 0.10 a 1.00) y lambda (desde 0.00017 hasta 0.13491), la precisión mostró poca variación, manteniéndose cercana al 81\% en los percentiles 1,2 y 3, lo que indica un buen ajuste del modelo. La tendencia en la precisión y el Kappa sugiere que la regularización aplicada por Elastic Net ayudó a controlar el sobreajuste sin perder mucho rendimiento, lo cual es positivo para problemas de alta dimensionalidad o multicolinealidad. En resumen, el modelo Elastic Net ofrece un buen balance entre precisión y estabilidad, con una capacidad moderada de clasificación, que es acorde a la magnitud de las variables involucradas.
 
-La tabla 3 representa otra estimación bajo metodología CARTS pero con otra especificación, también ajustado mediante validación cruzada, presenta resultados consistentes en cuanto a precisión y estabilidad. El valor promedio de precisión (Accuracy) fue de 81.2\%, con una desviación estándar baja (0.24\%), lo que indica que el modelo mantiene un rendimiento estable al aplicarse sobre distintas particiones de la muestra. El coeficiente de Kappa promedio fue de 0.46, lo cual representa un acuerdo moderado entre las predicciones del modelo y la clasificación real al igual que la especificación anterior. Aunque los valores máximos de precisión y Kappa alcanzaron 82.5\% y 0.50 respectivamente, los mínimos estuvieron en torno al 80.9\% y 0.45, lo que muestra que el rendimiento es bastante homogéneo a lo largo de los diferentes valores del hiperparámetro cp. En general, estos resultados refuerzan que el árbol de decisión logra capturar patrones relevantes para identificar condiciones de pobreza, aunque no presento grandes diferencias ante el cambio deespecificación.
+La Tabla \ref{tab:08_tabla_naive_bayes} del Anexo 8 presenta los resultados del modelo ajustado por la metodología de Naive Bayes que fue ajustado con los hiperparámetros alpha y lambda. Los resultados indican que, en promedio, el modelo alcanzó una precisión (Accuracy) de 80.45\%, con una desviación estándar de 0.12\%, lo que indica una precisión bastante estable entre las particiones de la muestra. El coeficiente Kappa promedio fue de 0.38, la precisión se mantuvo relativamente constante, alcanzando un máximo de 81.31\% y un Kappa de 0.45. Los valores de precisión en el primer y tercer cuartil se mantienen alrededor de 80.7\% y 81.3\%, lo que sugiere que el modelo es robusto y no presenta grandes variaciones al ajustar los hiperparámetros. En cuanto a la desviación estándar de precisión, los valores son bajos, lo que refleja la estabilidad del modelo a través de las particiones de la muestra. En resumen, el modelo Naive Bayes parece ser efectivo para este conjunto de datos, logrando una buena precisión con una moderada capacidad de discriminación, y su rendimiento se mantiene estable a pesar de la variación en los hiperparámetros.
 
-{\color{blue} Tabla 4: Estimación 2 metodología CARTs}
-
-La tabla 5 por su parte utilizo la metodología de Elastic Net. Los resultados muestran una variabilidad en los valores de precisión (Accuracy) y Kappa en función de los hiperparámetros alpha y lambda. En promedio, la precisión del modelo fue de 80.45\%, con una desviación estándar de 0.12\%, lo que sugiere que el rendimiento del modelo es relativamente consistente a través de las diferentes particiones de la muestra. A lo largo del rango de alpha (que varió de 0.10 a 1.00) y lambda (desde 0.00017 hasta 0.13491), la precisión mostró poca variación, manteniéndose cercana al 81\% en los percentiles 1,2 y 3, lo que indica un buen ajuste del modelo. La tendencia en la precisión y el Kappa sugiere que la regularización aplicada por Elastic Net ayudó a controlar el sobreajuste sin perder mucho rendimiento, lo cual es positivo para problemas de alta dimensionalidad o multicolinealidad. En resumen, el modelo Elastic Net ofrece un buen balance entre precisión y estabilidad, con una capacidad moderada de clasificación, que es acorde a la magnitud de las variables involucradas.
-
-{\color{blue} Tabla 5: Estimaciones por Elastic Net}
-
-La tabla 6 presenta los resultados del modelo ajustado por la metodología de Naive Bayes que fue ajustado con los hiperparámetros alpha y lambda. Los resultados indican que, en promedio, el modelo alcanzó una precisión (Accuracy) de 80.45\%, con una desviación estándar de 0.12\%, lo que indica una precisión bastante estable entre las particiones de la muestra. El coeficiente Kappa promedio fue de 0.38, la precisión se mantuvo relativamente constante, alcanzando un máximo de 81.31\% y un Kappa de 0.45. Los valores de precisión en el primer y tercer cuartil se mantienen alrededor de 80.7\% y 81.3\%, lo que sugiere que el modelo es robusto y no presenta grandes variaciones al ajustar los hiperparámetros. En cuanto a la desviación estándar de precisión, los valores son bajos, lo que refleja la estabilidad del modelo a través de las particiones de la muestra. En resumen, el modelo Naive Bayes parece ser efectivo para este conjunto de datos, logrando una buena precisión con una moderada capacidad de discriminación, y su rendimiento se mantiene estable a pesar de la variación en los hiperparámetros.
-
-{\color{blue} Tabla 6: Estimaciones por Naive Bayes}
-
-La tabla 7 muestra las estimaciones del modelo mediante boosting, con los hiperparámetros shrinkage, interaction.depth, minobsinnode, y n.trees. Los resultados muestran una variabilidad en la precisión (Accuracy) y el coeficiente Kappa en función de los valores de los hiperparámetros. La precisión promedio fue de 78.86\%, con una desviación estándar baja (0.11\%). Al analizar los percentiles, la precisión alcanzó un máximo de 82.33\%, con un Kappa de 0.49 en el cuartil superior, lo que muestra que con valores de shrinkage y interaction.depth más altos, el modelo logra una mayor capacidad discriminativa. Por otro lado, los valores mínimos de precisión y Kappa fueron bastante bajos (74.86\% y 0.00, respectivamente), lo que refleja que con configuraciones subóptimas de los hiperparámetros, el modelo no logró un buen rendimiento. La mediana de precisión fue de 79.72\%, lo que indica que el modelo con una configuración intermedia de hiperparámetros proporciona un rendimiento razonablemente bueno y estable. Además, la desviación estándar de la precisión fue muy baja (cerca de 0.0004), lo que refuerza la estabilidad del modelo. En resumen, el modelo ajustado por boosting parece ser bastante efectivo, logrando buenos niveles de precisión y Kappa, especialmente con configuraciones más altas en los hiperparámetros shrinkage e interaction.depth, lo cual podría indicar que el modelo está aprovechando mejor las interacciones no lineales entre las variables.
-
-{\color{blue} Tabla 7: Estimaciones por GBM}
+La Tabla \ref{tab:09_tabla_gbm} del Anexo 9 muestra las estimaciones del modelo mediante boosting, con los hiperparámetros shrinkage, interaction.depth, minobsinnode, y n.trees. Los resultados muestran una variabilidad en la precisión (Accuracy) y el coeficiente Kappa en función de los valores de los hiperparámetros. La precisión promedio fue de 78.86\%, con una desviación estándar baja (0.11\%). Al analizar los percentiles, la precisión alcanzó un máximo de 82.33\%, con un Kappa de 0.49 en el cuartil superior, lo que muestra que con valores de shrinkage y interaction.depth más altos, el modelo logra una mayor capacidad discriminativa. Por otro lado, los valores mínimos de precisión y Kappa fueron bastante bajos (74.86\% y 0.00, respectivamente), lo que refleja que con configuraciones subóptimas de los hiperparámetros, el modelo no logró un buen rendimiento. La mediana de precisión fue de 79.72\%, lo que indica que el modelo con una configuración intermedia de hiperparámetros proporciona un rendimiento razonablemente bueno y estable. Además, la desviación estándar de la precisión fue muy baja (cerca de 0.0004), lo que refuerza la estabilidad del modelo. En resumen, el modelo ajustado por boosting parece ser bastante efectivo, logrando buenos niveles de precisión y Kappa, especialmente con configuraciones más altas en los hiperparámetros shrinkage e interaction.depth, lo cual podría indicar que el modelo está aprovechando mejor las interacciones no lineales entre las variables.
 
 \subsection{Matrices de Confusión}
 
 A continuación, se presentan las matrices de confusión para los diferentes modelos evaluados:
 
-{\color{blue} Tabla 8: Matriz de confusión - Modelo CART 1}
+En la Tabla \ref{tab:10_matriz_1_cart} del Anexo 10 se muestra la matriz de confusión para el primer modelo CART.
 
-{\color{blue} Tabla 9: Matriz de confusión - Modelo CART 2}
+En la Tabla \ref{tab:11_matriz_2_cart} del Anexo 11 se presenta la matriz de confusión para el segundo modelo CART.
 
-{\color{blue} Tabla 10: Matriz de confusión - Modelo Elastic Net}
+La Tabla \ref{tab:12_matriz_elastic_net} del Anexo 12 contiene la matriz de confusión para el modelo Elastic Net.
 
-{\color{blue} Tabla 11: Matriz de confusión - Modelo Logit}
+La matriz de confusión para el modelo de regresión logística se puede observar en la Tabla \ref{tab:13_matriz_logit} del Anexo 13.
 
-{\color{blue} Tabla 12: Matriz de confusión - Modelo Naive Bayes}
+Los resultados de la matriz de confusión para el modelo Naive Bayes se encuentran en la Tabla \ref{tab:14_matriz_naive_bayes} del Anexo 14.
 
-{\color{blue} Tabla 13: Matriz de confusión - Modelo GBM}
+Finalmente, la matriz de confusión para el modelo GBM se presenta en la Tabla \ref{tab:15_matriz_gbm} del Anexo 15.
 
 \subsection{Importancia de Variables}
 
 [Esta sección queda pendiente para incluir un análisis de la importancia relativa de las variables en los modelos]
-
-\subsection{Importancia de variables}
-Análisis de las características más relevantes en la predicción.
 
 \section{Conclusión}
 Resumen de los hallazgos principales y posibles mejoras futuras.
@@ -405,49 +387,124 @@ Resumen de los hallazgos principales y posibles mejoras futuras.
 \addcontentsline{toc}{section}{Anexos}
 
 \section{Estadísticas descriptivas de variables continuas}
+\begin{table}[htbp]
+\centering
+\caption{Estadísticas descriptivas de variables continuas}
+\label{tab:01_descriptiva_personas_continua}
 \input{../views/tables/01_descriptiva_personas_continua.tex}
+\end{table}
 
 \section{Estadísticas descriptivas de variables discretas}
+\begin{table}[htbp]
+\centering
+\caption{Estadísticas descriptivas de variables discretas}
+\label{tab:02_descriptiva_personas_discreta}
 \input{../views/tables/02_descriptiva_personas_discreta.tex}
+\end{table}
 
 \section{Variables utilizadas en los modelos}
+\begin{table}[htbp]
+\centering
+\caption{Variables utilizadas en los modelos}
+\label{tab:03_variables_modelos}
 \input{../views/tables/03_variables_modelos.tex}
+\end{table}
 
 \section{Estimaciones mediante metodología LOGIT}
+\begin{table}[htbp]
+\centering
+\caption{Estimaciones mediante metodología LOGIT}
+\label{tab:04_tabla_logit}
 \input{../views/tables/04_tabla_logit.tex}
+\end{table}
 
 \section{Estimación 1 metodología CARTs}
+\begin{table}[htbp]
+\centering
+\caption{Estimación 1 metodología CARTs}
+\label{tab:05_tabla_1_cart}
 \input{../views/tables/05_tabla_1_cart.tex}
+\end{table}
 
 \section{Estimación 2 metodología CARTs}
+\begin{table}[htbp]
+\centering
+\caption{Estimación 2 metodología CARTs}
+\label{tab:06_tabla_2_cart}
 \input{../views/tables/06_tabla_2_cart.tex}
+\end{table}
 
 \section{Estimaciones por Elastic Net}
+\begin{table}[htbp]
+\centering
+\caption{Estimaciones por Elastic Net}
+\label{tab:07_tabla_elastic_net}
 \input{../views/tables/07_tabla_elastic_net.tex}
+\end{table}
 
 \section{Estimaciones por Naive Bayes}
+\begin{table}[htbp]
+\centering
+\caption{Estimaciones por Naive Bayes}
+\label{tab:08_tabla_naive_bayes}
 \input{../views/tables/08_tabla_naive_bayes.tex}
+\end{table}
 
 \section{Estimaciones por GBM}
+\begin{table}[htbp]
+\centering
+\caption{Estimaciones por GBM}
+\label{tab:09_tabla_gbm}
 \input{../views/tables/09_tabla_gbm.tex}
+\end{table}
 
 \section{Matriz de confusión - Modelo CART 1}
+\begin{table}[htbp]
+\centering
+\caption{Matriz de confusión - Modelo CART 1}
+\label{tab:10_matriz_1_cart}
 \input{../views/tables/10_matriz_1_cart.tex}
+\end{table}
 
 \section{Matriz de confusión - Modelo CART 2}
+\begin{table}[htbp]
+\centering
+\caption{Matriz de confusión - Modelo CART 2}
+\label{tab:11_matriz_2_cart}
 \input{../views/tables/11_matriz_2_cart.tex}
+\end{table}
 
 \section{Matriz de confusión - Modelo Elastic Net}
+\begin{table}[htbp]
+\centering
+\caption{Matriz de confusión - Modelo Elastic Net}
+\label{tab:12_matriz_elastic_net}
 \input{../views/tables/12_matriz_elastic_net.tex}
+\end{table}
 
 \section{Matriz de confusión - Modelo Logit}
+\begin{table}[htbp]
+\centering
+\caption{Matriz de confusión - Modelo Logit}
+\label{tab:13_matriz_logit}
 \input{../views/tables/13_matriz_logit.tex}
+\end{table}
 
 \section{Matriz de confusión - Modelo Naive Bayes}
+\begin{table}[htbp]
+\centering
+\caption{Matriz de confusión - Modelo Naive Bayes}
+\label{tab:14_matriz_naive_bayes}
 \input{../views/tables/14_matriz_naive_bayes.tex}
+\end{table}
 
 \section{Matriz de confusión - Modelo GBM}
+\begin{table}[htbp]
+\centering
+\caption{Matriz de confusión - Modelo GBM}
+\label{tab:15_matriz_gbm}
 \input{../views/tables/15_matriz_gbm.tex}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TERMINA EL CONTENIDO
@@ -463,18 +520,3 @@ Resumen de los hallazgos principales y posibles mejoras futuras.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TERMINA EL DOCUMENTO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-<<<<<<< HEAD
-
-% Este es un ejemplo de como incorporar las gráficas en el documento
-%\begin{figure}[htbp]
-%    \centering
-%    \includegraphics[width=0.8\textwidth]{../views/figures/poverty_distribution.png}
-%    \caption{Distribución de la pobreza}
-%    \label{fig:distribución_pobreza}
-%\end{figure}
-
-% Este es un ejemplo de como incorporar tablas en el documento
-%\input{../views/tables/descriptive_statistics.tex}
-
-=======
->>>>>>> bd0760c928061be4de0f5919116c0b45c5108315
