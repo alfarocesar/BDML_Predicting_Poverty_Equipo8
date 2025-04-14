@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2025.2.23)  13 APR 2025 21:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2025.2.23)  13 APR 2025 22:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -669,7 +669,6 @@ Package: fr-longtable 2007/11/28 v0.1b (beta) floatrow: additions for longtable
 \c@FBLTpage=\count344
 )
 Package hyperref Info: Link coloring ON on input line 83.
- (./document.out) (./document.out)
 \@outlinefile=\write3
 \openout3 = `document.out'.
 
@@ -685,7 +684,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 [1
 
 {/Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<../views/figures/pobreza_colombia.png, id=178, 736.7525pt x 376.40625pt>
+<../views/figures/pobreza_colombia.png, id=23, 736.7525pt x 376.40625pt>
 File: ../views/figures/pobreza_colombia.png Graphic file (type png)
 <use ../views/figures/pobreza_colombia.png>
 Package pdftex.def Info: ../views/figures/pobreza_colombia.png  used on input line 133.
@@ -736,33 +735,68 @@ Overfull \hbox (38.12146pt too wide) in paragraph at lines 296--297
 
 [12]
 
-[13] (../views/tables/01_descriptiva_personas_continua.tex
-Overfull \hbox (103.96692pt too wide) in paragraph at lines 5--69
- [][] 
+Package natbib Warning: Citation `huang2025unveiling' on page 13 undefined on input line 379.
+
+
+Package natbib Warning: Citation `karmaker2025machine' on page 13 undefined on input line 382.
+
+
+
+[13]
+
+[14] (../views/tables/01_descriptiva_personas_continua.tex
+Overfull \hbox (103.96692pt too wide) in alignment at lines 1--6
+ [] [] [] [] [] [] [] [] 
  []
 
-)
 
-[14
-
-]
-Overfull \vbox (283.31438pt too high) has occurred while \output is active []
-
-
-
-[15] (../views/tables/02_descriptiva_personas_discreta.tex
-Overfull \hbox (108.46252pt too wide) in paragraph at lines 5--81
- [][] 
+Overfull \hbox (103.96692pt too wide) in alignment at lines 6--12
+ [] [] [] [] [] [] [] [] 
  []
 
-)
 
-[16]
-Overfull \vbox (411.68661pt too high) has occurred while \output is active []
+Overfull \hbox (103.96692pt too wide) in alignment at lines 12--16
+ [] [] [] [] [] [] [] [] 
+ []
 
 
+Overfull \hbox (103.96692pt too wide) in alignment at lines 16--19
+ [] [] [] [] [] [] [] [] 
+ []
 
-[17] (../views/tables/03_variables_modelos.tex
+
+Overfull \hbox (103.96692pt too wide) in alignment at lines 19--79
+ [] [] [] [] [] [] [] [] 
+ []
+
+[15
+
+]) (../views/tables/02_descriptiva_personas_discreta.tex
+Overfull \hbox (108.46252pt too wide) in alignment at lines 1--7
+ [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (108.46252pt too wide) in alignment at lines 7--14
+ [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (108.46252pt too wide) in alignment at lines 14--18
+ [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (108.46252pt too wide) in alignment at lines 18--21
+ [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (108.46252pt too wide) in alignment at lines 21--93
+ [] [] [] [] [] [] [] 
+ []
+
+[16] [17]) (../views/tables/03_variables_modelos.tex
 Overfull \hbox (27.56824pt too wide) in paragraph at lines 35--35
 []|\T1/cmr/m/n/12 Ingresos_AlquilerPensiones| 
  []
@@ -800,7 +834,7 @@ Overfull \hbox (102.70827pt too wide) in paragraph at lines 5--26
  [][] 
  []
 
-) (../views/tables/10_matriz_1_cart.tex) (../views/tables/11_matriz_2_cart.tex) (../views/tables/12_matriz_elastic_net.tex) (../views/tables/13_matriz_logit.tex) (../views/tables/14_matriz_naive_bayes.tex) (../views/tables/15_matriz_gbm.tex)
+) (../views/tables/10_matriz_1_cart.tex) (../views/tables/11_matriz_2_cart.tex) (../views/tables/12_matriz_elastic_net.tex) (../views/tables/13_matriz_logit.tex
 
 [18]
 
@@ -814,38 +848,56 @@ Overfull \hbox (102.70827pt too wide) in paragraph at lines 5--26
 
 [23]
 
-[24]
+[24]) (../views/tables/14_matriz_naive_bayes.tex) (../views/tables/15_matriz_gbm.tex)
 
 [25]
 
 [26]
 
-[27] (./document.bbl)
+[27]
 
-[28] (./document.aux
+[28] (./document.bbl)
+
+Package natbib Warning: There were undefined citations.
+
+
+
+[29] (./document.aux
 LaTeX Info: Redefining \. on input line 12.
 LaTeX Info: Redefining \% on input line 12.
+
+
+Package natbib Warning: Citation(s) may have changed.
+(natbib)                Rerun to get citations correct.
+
 )
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-Package rerunfilecheck Info: File `document.out' has not changed.
-(rerunfilecheck)             Checksum: 2D61519603951FB3A0C6AB1CD9CBE067;8750.
+
+
+Package rerunfilecheck Warning: File `document.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `document.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  2D61519603951FB3A0C6AB1CD9CBE067;8750.
  ) 
 Here is how much of TeX's memory you used:
- 16628 strings out of 475113
- 270242 string characters out of 5762667
- 742542 words of memory out of 5000000
- 39235 multiletter control sequences out of 15000+600000
+ 16602 strings out of 475113
+ 269859 string characters out of 5762667
+ 740780 words of memory out of 5000000
+ 39210 multiletter control sequences out of 15000+600000
  572964 words of font info for 67 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 75i,12n,79p,1563b,584s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,12n,79p,1563b,637s stack positions out of 10000i,1000n,20000p,200000b,200000s
  </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm0600.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1728.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1095.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1095.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1440.600pk> </Users/cesaralfaro/Library/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600pk></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></Users/cesaralfaro/Library/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on document.pdf (28 pages, 394293 bytes).
+Output written on document.pdf (29 pages, 396707 bytes).
 PDF statistics:
- 814 PDF objects out of 1000 (max. 8388607)
- 396 compressed objects within 4 object streams
- 104 named destinations out of 1000 (max. 500000)
- 318 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 708 PDF objects out of 1000 (max. 8388607)
+ 284 compressed objects within 3 object streams
+ 107 named destinations out of 1000 (max. 500000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

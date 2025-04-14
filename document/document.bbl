@@ -21,6 +21,11 @@ Castillo-Álvarez, G. and Sarmiento-Barbieri, I. (2024b).
 \newblock Data pre-processing: Visualizing and handling missing values (part 2).
 \newblock Notebook proporcionado como material del curso.
 
+\bibitem[Huang et~al., 2025]{huang2025unveiling}
+Huang, S., Shao, Y., Hu, L., Bi, J., and Ma, Z. (2025).
+\newblock Unveiling the spatio-temporal patterns and mechanisms of poverty incidence in southwest china through multi-sourced data and interpretable machine learning.
+\newblock {\em Applied Geography}, 176:103541.
+
 \bibitem[Huffman and Nájera, 2024]{huffman2024measurement}
 Huffman, C. and Nájera, H. (2024).
 \newblock What we talk about when we talk about measurement in poverty research.
@@ -30,6 +35,11 @@ Huffman, C. and Nájera, H. (2024).
 James, G., Witten, D., Hastie, T., and Tibshirani, R. (2021).
 \newblock {\em An Introduction to Statistical Learning: with Applications in R}.
 \newblock Springer, New York, NY, 2 edition.
+
+\bibitem[Karmaker et~al., 2025]{karmaker2025machine}
+Karmaker, S.~C., Rjbongshi, A., Pal, B., Sen, K.~K., and Chapman, A.~J. (2025).
+\newblock Machine learning-based prediction of energy poverty in bangladesh: Unveiling key socioeconomic drivers for targeted policy actions.
+\newblock {\em Socio-Economic Planning Sciences}, 99:102213.
 
 \bibitem[{OpenAI}, 2023]{chatgpt2023conversations}
 {OpenAI} (2023).
