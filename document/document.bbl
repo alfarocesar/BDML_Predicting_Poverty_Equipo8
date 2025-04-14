@@ -21,6 +21,11 @@ Castillo-Álvarez, G. and Sarmiento-Barbieri, I. (2024b).
 \newblock Data pre-processing: Visualizing and handling missing values (part 2).
 \newblock Notebook proporcionado como material del curso.
 
+\bibitem[Huffman and Nájera, 2024]{huffman2024measurement}
+Huffman, C. and Nájera, H. (2024).
+\newblock What we talk about when we talk about measurement in poverty research.
+\newblock {\em Problemas del desarrollo}, 55(217):89--102.
+
 \bibitem[James et~al., 2021]{james2021introduction}
 James, G., Witten, D., Hastie, T., and Tibshirani, R. (2021).
 \newblock {\em An Introduction to Statistical Learning: with Applications in R}.
@@ -52,5 +57,10 @@ Sarmiento-Barbieri, I. and Castillo-Álvarez, G. (2024c).
 \newblock Uniendo bases y calculando pobreza.
 \newblock Material del curso BDML, Universidad de los Andes.
 \newblock Notebook proporcionado como guía para el taller.
+
+\bibitem[Tal, 2016]{tal2016measuring}
+Tal, E. (2016).
+\newblock How does measuring generate evidence? the problem of observational grounding.
+\newblock {\em Journal of Physics: Conference Series}, 772(1):012001.
 
 \end{thebibliography}
