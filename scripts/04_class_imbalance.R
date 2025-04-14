@@ -1,58 +1,15 @@
 ################################################################################
-# TÍTULO: 04_class_imbalance.R                                                #
+# TÍTULO: 04_class_imbalance.R                                               #
 # PROYECTO: Predicción de Pobreza en Colombia - Equipo 8                      #
-# DESCRIPCIÓN: Configuración de control de entrenamiento para modelos         #
-#              supervisados. Este script no entrena modelos aún, solo prepara #
-#              la estructura para el entrenamiento y evaluación.              #
-# FECHA: 08 de abril de 2025                                                  #
+# DESCRIPCIÓN: Tratamiento del desbalance de clases y comparación de modelos  #
+# FECHA: 13 de abril de 2025                                                   #
 ################################################################################
 
-# control de entrenamiento que será utilizado por los modelos posteriores.
+# Cargar librerías necesarias
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(caret, Metrics, MLmetrics, glmnet, rpart, randomForest, xgboost, naivebayes, dplyr)
 
-## Control de validación cruzada para modelos de clasificación
-## - Se usa validación cruzada con 5 particiones (folds)
-## - Se calculan probabilidades de clase (`classProbs = TRUE`)
-## - Se utiliza `prSummary` como función resumen (precision, recall, F1)
-
-ctrl <- trainControl(
-  method = "cv",                  # Validación cruzada
-  number = 5,                     # Número de folds
-  classProbs = TRUE,             # Probabilidades de clase
-  savePredictions = "final",     # Guardar predicciones finales
-  summaryFunction = prSummary    # Métricas: precisión, recall, F1
-)
-
-# Semilla para reproducibilidad
-set.seed(1051)
-
-# Entrenamiento de un primer modelo base usando regularización tipo ElasticNet (glmnet)
-# Este modelo sirve como punto de comparación inicial.
-model1 <- train(
-  Pobre ~ .,                      # Fórmula: variable objetivo vs. predictores
-  data = train,                   # Conjunto de entrenamiento
-  metric = "Accuracy",            # Métrica de optimización: Accuracy (cambiar a F1 si se desea)
-  method = "glmnet",              # Algoritmo Elastic Net (regresión regularizada)
-  trControl = ctrl,              # Control de entrenamiento
-  tuneGrid = expand.grid(        # Grid de hiperparámetros
-    alpha = seq(0, 1, by = 0.2),        # Alpha entre Ridge (0) y Lasso (1)
-    lambda = 10^seq(10, -2, length = 10) # Valores de penalización lambda
-  )
-)
-
-# Visualizar resultados del modelo base
-model1
-
-################################################################################
-# Sección complementaria: redefinición del control con métricas de evaluación #
-################################################################################
-
-# Cargar paquete de métricas si no ha sido cargado
-p_load(Metrics)
-
-# Definir función resumen personalizada con métricas adicionales si se desea
-fiveStats <- function(...) c(prSummary(...))
-
-# Redefinición del objeto `ctrl` si se requiere reutilizar con métricas adicionales
+# 1. CONTROL DE ENTRENAMIENTO --------------------------------------------------
 ctrl <- trainControl(
   method = "cv",
   number = 5,
@@ -60,3 +17,60 @@ ctrl <- trainControl(
   savePredictions = "final",
   summaryFunction = prSummary
 )
+
+# 2. FÓRMULA Y MODELOS ----------------------------------------------------------
+form <- Pobre ~ .
+
+modelos <- list(
+  logit = train(form, data = train, method = "glm", family = "binomial", trControl = ctrl, metric = "F"),
+  elasticnet = train(form, data = train, method = "glmnet", trControl = ctrl, metric = "F",
+                     tuneGrid = expand.grid(
+                       alpha = seq(0, 1, 0.2),
+                       lambda = 10^seq(-1, -3, length = 10)
+                     )),
+  cart = train(form, data = train, method = "rpart", trControl = ctrl, metric = "F"),
+  rf = train(form, data = train, method = "rf", trControl = ctrl, metric = "F"),
+  boosting = train(form, data = train, method = "xgbTree", trControl = ctrl, metric = "F"),
+  nb = train(form, data = train, method = "naive_bayes", trControl = ctrl, metric = "F")
+)
+
+# 3. SELECCIÓN DEL MEJOR MODELO --------------------------------------------------
+f1_scores <- sapply(modelos, function(m) max(m$results$F, na.rm = TRUE))
+mejor_modelo <- modelos[[which.max(f1_scores)]]
+
+# 4. F1 SCORE EN VALIDACIÓN CRUZADA ---------------------------------------------
+preds_bestmodel <- mejor_modelo$pred
+
+if (!is.null(mejor_modelo$bestTune)) {
+  best_params <- mejor_modelo$bestTune
+  preds_bestmodel <- preds_bestmodel %>%
+    dplyr::filter_at(vars(names(best_params)), all_vars(. == best_params[[cur_column()]]))
+}
+
+f1_best <- F1_Score(y_true = preds_bestmodel$obs,
+                    y_pred = preds_bestmodel$pred,
+                    positive = "Yes")
+cat("F1-Best Model :", round(f1_best, 4), "\n")
+
+# 5. PREDICCIONES SOBRE TEST ---------------------------------------------------
+predictSample <- test %>% 
+  mutate(pobre_lab = predict(mejor_modelo, newdata = test, type = "raw")) %>% 
+  mutate(pobre = ifelse(pobre_lab == "Yes", 1, 0)) %>% 
+  select(id, pobre)
+
+# 6. EXPORTAR RESULTADOS -------------------------------------------------------
+template <- read.csv("sample_submission.csv")
+
+if (!is.null(mejor_modelo$bestTune)) {
+  lambda_str <- gsub("\\.", "_", as.character(round(mejor_modelo$bestTune$lambda, 4)))
+  alpha_str <- gsub("\\.", "_", as.character(mejor_modelo$bestTune$alpha))
+  name <- paste0("EN_lambda_", lambda_str, "alpha", alpha_str, ".csv")
+} else {
+  name <- paste0("mejor_modelo_", names(modelos)[which.max(f1_scores)], ".csv")
+}
+
+write.csv(predictSample, name, row.names = FALSE)
+
+################################################################################
+#                            FIN DEL SCRIPT                                    #
+################################################################################
